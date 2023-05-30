@@ -9,7 +9,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QElapsedTimer>
-#include <QMediaPlayer>
+//#include <QMediaPlayer>
 
 class GameScene : public QGraphicsScene
 {
