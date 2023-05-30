@@ -6,8 +6,8 @@
 #include <QPainter>
 #include <QDebug>
 
-FallingKey::FallingKey(qreal _x, qreal _y, qreal _w, qreal _h, QColor _c, int _v, QGraphicsItem* parent) : QGraphicsRectItem(parent),
-    duration(_y / _v), x(_x), max_y(_y), w(_w), h(_h), color(_c)
+FallingKey::FallingKey(qreal _x, qreal _y0, qreal _y, qreal _w, qreal _h, QColor _c, int _v, QGraphicsItem* parent) : QGraphicsRectItem(parent),
+    duration(_y / _v), x(_x), min_y(_y0), max_y(_y), w(_w), h(_h), color(_c)
 {
     QRectF rect(x, -h, w, h);
 
@@ -23,8 +23,8 @@ void FallingKey::startFalling() {
     QSequentialAnimationGroup* group = new QSequentialAnimationGroup(this);
     QPropertyAnimation* ani1 = new QPropertyAnimation(this, "y");
     ani1->setDuration(duration);
-    ani1->setStartValue(-h);
-    ani1->setEndValue(max_y+h);
+    ani1->setStartValue(min_y);
+    ani1->setEndValue(max_y+2*h);
     group->addAnimation(ani1);
     QPropertyAnimation* ani2 = new QPropertyAnimation(this, "opacity");
     ani2->setDuration(10);

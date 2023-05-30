@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     fallingkey.cpp \
     gamescene.cpp \
-    main.cpp
+    main.cpp \
+    mainmenu.cpp
 
 HEADERS += \
     fallingkey.h \
-    gamescene.h
+    gamescene.h \
+    mainmenu.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

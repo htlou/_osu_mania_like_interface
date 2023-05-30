@@ -9,12 +9,14 @@
 #include <QFile>
 #include <QTimer>
 #include <QElapsedTimer>
+#include <QMediaPlayer>
 
 class GameScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
     GameScene(QObject *parent = 0);
+    ~GameScene();
 
 public slots:
     void timerFallingKey();
@@ -27,7 +29,9 @@ private:
     void startGame();
     void setBackgroundItem();
     // read file
-    void Read_Music_Data(const QString & Path);
+    void Read_Chart_Data(const QString & Path);
+    void Read_Img_Data(const QString &Path);
+    void Read_BGM_Data(const QString &Path);
     int ReadInt(QFile* file);
     // falling items
     void setFallingItems();
@@ -36,6 +40,8 @@ private:
 
     int s_width;
     int s_height;
+    int x_offset;
+    int y_offset;
     int status; // 0 for menu
     int nTracks; // number of tracks
     int Total_time;
@@ -47,6 +53,13 @@ private:
     QVector<decltype(Qt::Key_D)> keyVal {Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J};
     QVector<QPair<int, int> > tm[11];
     QMultiMap<int, FallingKey*> fallingKeys;
+
+    double start_time = 0; // timer
+    QString Path; // Music Data Path
+    QString DefaultPath;//default Data Path, storing something like default key sound
+    int eps = 400; //key pressed in this time will be calculated(otherwise neglected)
+    int eps_good = 300; // eps_good
+    int eps_perfect = 200; // eps_perfect
 };
 
 #endif // GAMESCENE_H

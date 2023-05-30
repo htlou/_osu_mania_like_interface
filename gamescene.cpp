@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QFile>
 #include <QTimerEvent>
+#include <QDir>
 
 #include <QGraphicsTextItem>
 
@@ -17,9 +18,13 @@ GameScene::GameScene(QObject *parent)
     : QGraphicsScene(parent), status(0), trackWidth(100), trackInterval(20), velocity(1)
 {
     // set the size of the scene & the background
+    start_time = clock();
+    Path = ":/data/data";
+    DefaultPath = ":/resources";
+
     setSceneRect(0, 0, 1920, 1080);
     s_width = sceneRect().size().toSize().width(); s_height = sceneRect().size().toSize().height();
-    trackHeight = s_height * 3 / 4;
+    trackHeight = s_height * 6 / 8;
     QGraphicsRectItem* background = new QGraphicsRectItem(sceneRect());
     background->setBrush(Qt::black);
     this->addItem(background);
@@ -30,8 +35,10 @@ GameScene::GameScene(QObject *parent)
     startPrompt->setFont(font_start);
     startPrompt->setPos((s_width - startPrompt->boundingRect().width()) / 2, (s_height - startPrompt->boundingRect().height()) / 2);
     this->addItem(startPrompt);
-    // track x
-    track_x = (s_width - trackInterval) / 2 - 2 * trackWidth - trackInterval;
+    // track x&y
+    y_offset = s_height/8;
+    x_offset = s_width/3;
+    track_x = (s_width - trackInterval) / 2 - 2 * trackWidth - trackInterval - x_offset;
 }
 
 void GameScene::keyPressEvent(QKeyEvent* event) {
@@ -42,7 +49,11 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Shift && !status) {
         clear(); // refresh the scene
         startGame();
-    } else {
+    }
+    else if(event->key()== Qt::Key_Exit && status){
+        //应该是一个暂停界面
+    }
+    else {
         for (int i = 0; i < 4; ++i) {
             if (event->key() == keyVal[i]) {
                 // detect collision
@@ -67,13 +78,16 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
 
 void GameScene::startGame() {
     setBackgroundItem();
-    Read_Music_Data(":/data/data/1.txt");
+    Read_Chart_Data((Path+"/1/chart.txt"));
+    Read_BGM_Data((Path + "/1/audio.mp3"));
+//    Read_Img_Data((Path + "/1/BG.jpg"));也可以用这个放置曲绘，没想好
     setFallingItems();
 }
 
 void GameScene::setBackgroundItem() {
     // background picture
-    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(QPixmap(":/img/resources/bg1.jpg")); // sources can be enriched afterwards
+//    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(QPixmap(":/img/resources/bg1.jpg")); // sources can be enriched afterwards
+    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(QPixmap((Path + "/1/BG.jpg")));
     addItem(background);
     background->setPos(0, 0);
     background->setScale(s_width / background->boundingRect().width());
@@ -84,7 +98,7 @@ void GameScene::setBackgroundItem() {
         // add track element (photoshop needed to get neater tracks)
         // qreal trackWidth = 100, trackInterval = 20, trackHeight = (qreal)s_height * 3 / 4;
         int kx = track_x + i * trackWidth + i * trackInterval;
-        QRectF r(kx, 0, trackWidth, trackHeight);
+        QRectF r(kx, y_offset, trackWidth, trackHeight);
         QGraphicsRectItem *tmptrack = new QGraphicsRectItem(r);
         tmptrack->setPen(Qt::NoPen);
         tmptrack->setBrush(QColor(0, 0, 255, 64));
@@ -112,9 +126,9 @@ void GameScene::setFallingItems() {
             for (auto p : tm[i]) {
                 FallingKey* fk;
                 if (p.second == -1)
-                    fk = new FallingKey(track_x + (i-1) * (trackWidth + trackInterval), trackHeight + trackWidth, trackWidth, trackWidth, QColor(50, 50, 200, 156), velocity);
+                    fk = new FallingKey(track_x + (i-1) * (trackWidth + trackInterval), y_offset, trackHeight, trackWidth, trackWidth/2, QColor(50, 50, 200, 156), velocity);
                 else
-                    fk = new FallingKey(track_x + (i-1) * (trackWidth + trackInterval), trackHeight + trackWidth, trackWidth, trackWidth + velocity * (p.second - p.first), QColor(50, 50, 200, 156), velocity);
+                    fk = new FallingKey(track_x + (i-1) * (trackWidth + trackInterval), y_offset, trackHeight, trackWidth, trackWidth + velocity * (p.second - p.first), QColor(50, 50, 200, 156), velocity);
                 // 长键还没有想好怎么判定和消失
                 addItem(fk);
                 fallingKeys.insert(p.first, fk);
@@ -160,9 +174,10 @@ int GameScene :: ReadInt(QFile* file){
     return ans;
 }
 
-void GameScene :: Read_Music_Data(const QString & Path){
+void GameScene :: Read_Chart_Data(const QString & Path){
+    qDebug()<<Path;
     QFile file(Path);
-    file.open(QIODevice :: ReadOnly | QIODevice :: Text);
+    if(file.open(QIODevice :: ReadOnly | QIODevice :: Text)){
     int Track_num = ReadInt(&file);
     Total_time = ReadInt(&file);
     for(int i = 1; i <= Track_num; i ++){
@@ -184,10 +199,25 @@ void GameScene :: Read_Music_Data(const QString & Path){
     for(int i = 1; i <= Track_num; i ++)
         qDebug() << tm[i].size() << " "; qDebug() << "\n";
     //qDebug() << "Read End!";
+    file.close();
+    }
+    else {
+    qDebug() << "File open error: " << file.errorString();
+    }
+}
+
+void GameScene :: Read_Img_Data(const QString & Path){
+    QGraphicsPixmapItem *foreground_img = new QGraphicsPixmapItem(QPixmap(Path));
+    addItem(foreground_img);
+    foreground_img->setPos(s_width/3, s_height/6);
+    foreground_img->setScale(s_width / (2*foreground_img->boundingRect().width()));
 }
 
 void GameScene::endInterface() {
     qDebug() << "End of the game";
 }
 
-
+GameScene::~GameScene(){
+    Total_time = 0;
+    // TODO:理想的情况下手动关闭窗口后程序应当停止运行，但我搞不出来TAT
+}
