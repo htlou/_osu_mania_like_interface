@@ -5,7 +5,7 @@
     </qresource>
     <qresource prefix="/data">
         <file>data/1.txt</file>
-        <file>data/1/1.txt</file>
         <file>data/1/BG.jpg</file>
+        <file>data/1/chart.txt</file>
     </qresource>
 </RCC>

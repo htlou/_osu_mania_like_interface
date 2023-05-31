@@ -213,6 +213,9 @@ void GameScene :: Read_Img_Data(const QString & Path){
     foreground_img->setScale(s_width / (2*foreground_img->boundingRect().width()));
 }
 
+void GameScene::Read_BGM_Data(const QString & Path){
+    //
+}
 void GameScene::endInterface() {
     qDebug() << "End of the game";
 }
