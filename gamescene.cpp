@@ -49,6 +49,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_Shift && !status) {
         clear(); // refresh the scene
         startGame();
+        status = 1;
     }
     else if(event->key()== Qt::Key_Exit && status){
         //应该是一个暂停界面
