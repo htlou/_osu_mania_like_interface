@@ -39,6 +39,8 @@ GameScene::GameScene(QObject *parent)
     y_offset = s_height/8;
     x_offset = s_width/3;
     track_x = (s_width - trackInterval) / 2 - 2 * trackWidth - trackInterval - x_offset;
+
+    connect(player, SIGNAL(errorOccurred(QMediaPlayer::Error, QString)), this, SLOT(onError(QMediaPlayer::Error, QString)));
 }
 
 void GameScene::keyPressEvent(QKeyEvent* event) {
@@ -215,8 +217,18 @@ void GameScene :: Read_Img_Data(const QString & Path){
 }
 
 void GameScene::Read_BGM_Data(const QString & Path){
-    //
+    player->setAudioOutput(audioOutput);
+    player->setSource(QUrl("qrc"+Path));
+    audioOutput->setVolume(50);
+    player->play();
+    if(player->isPlaying())qDebug()<<"playing bgm";
 }
+
+void GameScene::onError(QMediaPlayer::Error error, QString)
+{
+    qDebug() << "播放出错：" << player->errorString();
+}
+
 void GameScene::endInterface() {
     qDebug() << "End of the game";
 }

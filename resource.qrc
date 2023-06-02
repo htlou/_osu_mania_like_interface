@@ -7,5 +7,7 @@
         <file>data/1.txt</file>
         <file>data/1/BG.jpg</file>
         <file>data/1/chart.txt</file>
+        <file>data/1/audio.mp3</file>
+        <file>data/1/bga.mp4</file>
     </qresource>
 </RCC>

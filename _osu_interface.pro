@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,12 +13,14 @@ SOURCES += \
     fallingkey.cpp \
     gamescene.cpp \
     main.cpp \
-    mainmenu.cpp
+    mainmenu.cpp \
+    pause.cpp
 
 HEADERS += \
     fallingkey.h \
     gamescene.h \
-    mainmenu.h
+    mainmenu.h \
+    pause.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

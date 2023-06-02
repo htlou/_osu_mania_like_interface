@@ -9,7 +9,8 @@
 #include <QFile>
 #include <QTimer>
 #include <QElapsedTimer>
-//#include <QMediaPlayer>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 class GameScene : public QGraphicsScene
 {
@@ -20,6 +21,7 @@ public:
 
 public slots:
     void timerFallingKey();
+    void onError(QMediaPlayer::Error error, QString);
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -60,6 +62,11 @@ private:
     int eps = 400; //key pressed in this time will be calculated(otherwise neglected)
     int eps_good = 300; // eps_good
     int eps_perfect = 200; // eps_perfect
+
+    QMediaPlayer *player = new QMediaPlayer;
+    QAudioOutput *audioOutput = new QAudioOutput;
+
+
 };
 
 #endif // GAMESCENE_H
