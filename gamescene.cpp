@@ -1,4 +1,5 @@
 #include "gamescene.h"
+#include "globalVariables.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -22,7 +23,7 @@ GameScene::GameScene(QObject *parent)
     Path = ":/data/data";
     DefaultPath = ":/resources";
 
-    setSceneRect(0, 0, 1920, 1080);
+    setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     s_width = sceneRect().size().toSize().width(); s_height = sceneRect().size().toSize().height();
     trackHeight = s_height * 6 / 8;
     QGraphicsRectItem* background = new QGraphicsRectItem(sceneRect());
@@ -175,10 +176,14 @@ void GameScene::startGame() {
 void GameScene::setBackgroundItem() {
     // background picture
 //    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(QPixmap(":/img/resources/bg1.jpg")); // sources can be enriched afterwards
-    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(QPixmap((Path + "/1/BG.jpg")));
+
+    // 分辨率缩放的解决方案
+    QPixmap bgPic(Path + "/1/BG.jpg");
+    bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
+    background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
     addItem(background);
-    background->setPos(0, 0);
-    background->setScale(s_width / background->boundingRect().width());
+
     // osu!mania keys and tracks (set default to 4 tracks)
     // nTracks = 4;
     qDebug() << nTracks << " This is ntrack";

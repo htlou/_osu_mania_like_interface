@@ -89,6 +89,7 @@ void MyMainWindow::enter_select_0()
     view->showFullScreen();
 //    centralWidget()->layout()->addWidget(view);
         // 隐藏主菜单视图
+
 }
 
 void MyMainWindow::enter_settings_0()

@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     fallingkey.cpp \
     gamescene.cpp \
+    globalVariables.cpp \
     main.cpp \
     mainmenu.cpp \
     pause.cpp
@@ -19,6 +20,7 @@ SOURCES += \
 HEADERS += \
     fallingkey.h \
     gamescene.h \
+    globalVariables.h \
     mainmenu.h \
     pause.h
 
