@@ -1,6 +1,36 @@
 #include "mainmenu.h"
+#include "globalvariations.h"
 #include <gamescene.h>
 #include <settings.h>
+
+MainMenu::MainMenu(QObject *parent): QGraphicsScene(parent){
+
+    // add background for the start menu
+    QPixmap _background(QPixmap(":/img/resources/fail-background.png"));
+    _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    background = new QGraphicsPixmapItem(_background);
+    background->setPos(-(_background.width()-SCREEN_WIDTH)/2, -(_background.height()-SCREEN_HEIGHT)/2);
+    addItem(background);
+
+    MainMenuButton *startButton = new MainMenuButton("Start", nullptr);
+    MainMenuButton *settingsButton = new MainMenuButton("Settings", nullptr);
+    MainMenuButton *quitButton = new MainMenuButton("Quit", nullptr);
+    addItem(startButton);
+    addItem(settingsButton);
+    addItem(quitButton);
+
+    int y = 0;
+    startButton->setPos(0, y);
+    y += startButton->boundingRect().height() * 2;
+    settingsButton->setPos(0, y);
+    y += settingsButton->boundingRect().height() * 2;
+    quitButton->setPos(0, y);
+
+    connect(startButton, &MainMenuButton::button_pressed, this, &MainMenu::enter_select_slot);
+    connect(settingsButton, &MainMenuButton::button_pressed, this, &MainMenu::enter_settings_slot);
+    connect(quitButton, &MainMenuButton::button_pressed, this, &MainMenu::quit_game_slot);
+}
+
 
 QRectF MainMenuButton::boundingRect() const{
     return QRectF(-100, -25, 200, 50);
@@ -11,8 +41,6 @@ void MainMenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 //    Q_UNUSED(option);
 //    Q_UNUSED(widget);
 
-    // 不需要绘制任何内容，因为QPushButton已经处理了绘制逻辑
-    // 上面那句话现在是扯淡了
     QColor color = m_hover ? QColor(255, 255, 255, 50) : QColor(0, 0, 0, 50);
     if (m_pressed) {
         color = QColor(255, 255, 255, 100);
@@ -50,73 +78,4 @@ void MainMenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     m_hover = false;
     update();
 //    QGraphicsItem::hoverLeaveEvent(event);
-}
-
-MyMainWindow::MyMainWindow(QWidget *parent)
-    : QMainWindow(parent)
-{
-    // 创建场景和视图
-    m_mainMenu = new MainMenu(this);
-    m_view = new QGraphicsView(m_mainMenu, this);
-
-    // 将视图设置为主窗口的中心窗口
-    setCentralWidget(m_view);
-
-    // 连接主菜单的信号和槽函数/*
-    connect(m_mainMenu, &MainMenu::enter_select_sig, this, &MyMainWindow::enter_select_0);
-    connect(m_mainMenu, &MainMenu::enter_settings_sig, this, &MyMainWindow::enter_settings_0);
-    connect(m_mainMenu, &MainMenu::quit_game_sig, this, &MyMainWindow::quit_game_0);
-}
-
-void MyMainWindow::enter_select_0()
-{
-    qDebug()<<"select ongoing...";
-    // 在此处理进入游戏的逻辑
-//    QGraphicsView view;
-//    GameScene scene;
-//    view.setRenderHint(QPainter::Antialiasing);
-//    view.setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    view.setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    view.setScene(&scene);
-//    view.setFixedSize(scene.sceneRect().size().toSize());
-//    view.show();
-    scene = new GameScene(this);
-    view = new QGraphicsView(scene, this);
-    view->setRenderHint(QPainter::Antialiasing);
-    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    view->setFixedSize(scene->sceneRect().size().toSize());
-    view->setWindowFlags(Qt::Window);
-    view->showFullScreen();
-    connect(scene, &GameScene::closethis, this, &MyMainWindow::close_game_window);
-//    centralWidget()->layout()->addWidget(view);
-        // 隐藏主菜单视图
-}
-
-void MyMainWindow::enter_settings_0()
-{
-    // 在此处理打开设置的逻辑
-
-    qDebug()<<"setting ongoing...";
-    settings_window *setting_ = new settings_window();
-    setting_->showFullScreen();
-    connect(setting_, &settings_window::quit_settings_,this,&MyMainWindow::return_from_settings);
-}
-
-void MyMainWindow::quit_game_0()
-{
-    // 在此处理退出游戏的逻辑
-    qDebug()<<"quit ongoing...";
-    QApplication::quit();
-}
-
-void MyMainWindow::close_game_window(){
-    qDebug()<<"test";
-    view->close();
-
-    delete view;
-}
-
-void MyMainWindow :: return_from_settings(){
-    qDebug() << "return from settings";
 }

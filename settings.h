@@ -58,11 +58,7 @@ signals:
     void exit_settings();
 
 public slots:
-    void return_slot(){
-        qDebug() << "return from settings";
-        emit exit_settings();
-    }
-
+    void return_slot();
 
 public:
     keysets* L1;
@@ -94,37 +90,7 @@ public:
         (w->txt)->setPos(px+30,py+80);
         (w->txt)->setFont(w->font_);
     }
-    settings_scene(QObject *parent = nullptr): QGraphicsScene(parent){
-        QPixmap _background(":/img/resources/bg1.jpg");
-        _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
-        background = new QGraphicsPixmapItem(_background);
-        background->setPos(0,0);
-        this->addItem(background);
-
-        settings_button* return_button = new settings_button("Exit", nullptr);
-        addItem(return_button);
-        connect(return_button, &settings_button::button_pressed,this,&settings_scene::return_slot);
-
-        QFont font__ = QFont("Arial",22);
-
-        nowchange = -1;
-        L1 = new keysets("Left Key 1","Key_"+QString((char)(key_val_[0]-65+'A')),100,100,font__);
-        L2 = new keysets("Left Key 2","Key_"+QString((char)(key_val_[1]-65+'A')),350,100,font__);
-        L3 = new keysets("Left Key 3","Key_"+QString((char)(key_val_[2]-65+'A')),600,100,font__);
-        R1 = new keysets("Right Key 1","Key_"+QString((char)(key_val_[3]-65+'A')),100,300,font__);
-        R2 = new keysets("Right Key 2","Key_"+QString((char)(key_val_[4]-65+'A')),350,300,font__);
-        R3 = new keysets("Right Key 3","Key_"+QString((char)(key_val_[5]-65+'A')),600,300,font__);
-
-        addkeysets(L1),addkeysets(L2),addkeysets(L3),addkeysets(R1),addkeysets(R2),addkeysets(R3);
-
-        connect(L1,&keysets::pressed,this,&settings_scene::pl1);
-        connect(L2,&keysets::pressed,this,&settings_scene::pl2);
-        connect(L3,&keysets::pressed,this,&settings_scene::pl3);
-        connect(R1,&keysets::pressed,this,&settings_scene::pr1);
-        connect(R2,&keysets::pressed,this,&settings_scene::pr2);
-        connect(R3,&keysets::pressed,this,&settings_scene::pr3);
-        //位置是随便放的
-    }
+    settings_scene(QObject *parent = nullptr);
 };
 
 class settings_window : public QMainWindow{

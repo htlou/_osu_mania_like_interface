@@ -10,19 +10,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    board.cpp \
     fallingkey.cpp \
     gamescene.cpp \
     globalvariations.cpp \
     main.cpp \
     mainmenu.cpp \
+    myMainWindow.cpp \
     pause.cpp \
     settings.cpp
 
 HEADERS += \
+    board.h \
     fallingkey.h \
     gamescene.h \
     globalvariations.h \
     mainmenu.h \
+    myMainWindow.h \
     pause.h \
     settings.h
 

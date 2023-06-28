@@ -65,55 +65,10 @@ public slots:
 public:
     QGraphicsPixmapItem *background;
 
-    MainMenu(QObject *parent = nullptr): QGraphicsScene(parent){
-        MainMenuButton *startButton = new MainMenuButton("Start", nullptr);
-        MainMenuButton *settingsButton = new MainMenuButton("Settings", nullptr);
-        MainMenuButton *quitButton = new MainMenuButton("Quit", nullptr);
-
-        QPixmap _background(":/img/resources/bg1.jpg");
-        _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
-        background = new QGraphicsPixmapItem(_background);
-        background->setPos(0,0);
-        this->addItem(background);
-
-        addItem(startButton);
-        addItem(settingsButton);
-        addItem(quitButton);
-
-        int y = -startButton->boundingRect().height() * 2;
-        startButton->setPos(0, y);
-        y += startButton->boundingRect().height() * 2;
-        settingsButton->setPos(0, y);
-        y += settingsButton->boundingRect().height() * 2;
-        quitButton->setPos(0, y);
-
-        connect(startButton, &MainMenuButton::button_pressed, this, &MainMenu::enter_select_slot);
-        connect(settingsButton, &MainMenuButton::button_pressed, this, &MainMenu::enter_settings_slot);
-        connect(quitButton, &MainMenuButton::button_pressed, this, &MainMenu::quit_game_slot);
-    }
+    explicit MainMenu(QObject *parent = nullptr);
 
 };
 
-class MyMainWindow : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    MyMainWindow(QWidget *parent = nullptr);
-    QGraphicsView *view;
-    GameScene *scene;
-
-public slots:
-    void enter_select_0();
-    void enter_settings_0();
-    void quit_game_0();
-    void close_game_window();
-    void return_from_settings();
-
-private:
-    QGraphicsView *m_view;
-    MainMenu *m_mainMenu;
-};
 
 
 

@@ -3,7 +3,11 @@
 
 #include "fallingkey.h"
 #include "globalvariations.h"
+#include "myMainWindow.h"
+#include "pause.h"
+#include "board.h"
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QObject>
 #include <QDebug>
 #include <QKeyEvent>
@@ -35,8 +39,12 @@ protected:
     void keyPressEvent(QKeyEvent* event);
     void keyReleaseEvent(QKeyEvent* event);
 
+signals:
+    void gamePauseSig();
+
 private:
     QProcess *myProcess;
+    QObject *_parent;
 
     void startGame();
     void setBackgroundItem();
@@ -76,6 +84,7 @@ private:
     int keyVal[6] {Qt::Key_S, Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J, Qt::Key_K};
     QVector<QPair<int, int> > tm[11];
     QMultiMap<int, FallingKey*> fallingKeys;
+    QVector<DetectLine*> detectLines;
 
     QGraphicsSimpleTextItem* Score_ = new QGraphicsSimpleTextItem("0000000");
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
