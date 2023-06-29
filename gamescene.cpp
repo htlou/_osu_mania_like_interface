@@ -12,10 +12,10 @@
 #include <QDir>
 
 #include <QGraphicsTextItem>
-#include <pause.h>
+#include "pause.h"
 
 GameScene::GameScene(QObject *parent)
-    : QGraphicsScene(parent), _parent(parent), status(0), trackWidth(100), trackInterval(20), velocity(1), track_x(150)
+    : QGraphicsScene(parent), _parent(parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
     start_time = clock();
@@ -107,7 +107,16 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
         // stop timer, record pause time
         qDebug()<<"stop!!!";
         double start_pause = clock();
-        s_timer.stop();
+        keyFallingTimer->stop();
+        player->pause();
+        // pause the falling keys
+        for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
+            if (p.value()->isFalling) {
+                p.value()->pauseFalling();
+            } else
+                break;
+        }
+        pauseClock = e_timer.elapsed();
 //        // emit signal
 //        emit gamePauseSig();
         MyPauseWindow *PauseWindow = new MyPauseWindow;
@@ -198,6 +207,11 @@ void GameScene::startGame() {
     Read_BGM_Data((Path + "/1/audio.mp3"));
 //    Read_Img_Data((Path + "/1/BG.jpg"));也可以用这个放置曲绘，没想好
     setFallingItems();
+    // set timer events
+    keyFallingTimer = new QTimer(this);
+    keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
+    e_timer.start();
+    connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
 }
 
 void GameScene::setBackgroundItem() {
@@ -212,7 +226,7 @@ void GameScene::setBackgroundItem() {
     // nTracks = 4;
     qDebug() << nTracks << " This is ntrack";
 
-    // show board and fixed keys
+    // show board and fixed boundary lines
     Board *trackBoard = new Board;
     addItem(trackBoard);
     for (int i = 0; i < 4; ++i) {
@@ -221,18 +235,13 @@ void GameScene::setBackgroundItem() {
         detectLines.append(dl);
         addItem(dl);
     }
-    // set timer event
-    s_timer.setInterval(100); // 0.1s 触发判定是否有键下落
-    s_timer.start();
-    e_timer.start();
-    connect(&s_timer, &QTimer::timeout, this, &GameScene::timerFallingKey);
 
     QFont font("Arial", 30); // 初始化得分与Combo
-    Score_ -> setPos(900,100);
-    Score_ -> setBrush(Qt::red);
+    Score_ -> setPos(SCREEN_WIDTH-300,100);
+    Score_ -> setBrush(Qt::white);
     Score_ -> setFont(font);
-    Combo_ -> setPos(930,150);
-    Combo_ -> setBrush(Qt::red);
+    Combo_ -> setPos(SCREEN_WIDTH-300,150);
+    Combo_ -> setBrush(Qt::white);
     Combo_ -> setFont(font);
 
     this -> addItem(Score_);
@@ -246,14 +255,9 @@ void GameScene::setFallingItems() {
         if (!tm[i].empty()) {
             // create falling items
             for (auto p : tm[i]) {
-                FallingKey* fk;
-                if (p.second == -1)
-                    fk = new FallingKey(TRACK_WIDTH*(i-2)+SCREEN_WIDTH/2, y_offset, TRACK_HEIGHT, TRACK_WIDTH, TRACK_WIDTH/2, QColor(50, 50, 200, 156), velocity);
-                else
-                    fk = new FallingKey(TRACK_WIDTH*(i-2)+SCREEN_WIDTH/2, y_offset, TRACK_HEIGHT, TRACK_WIDTH, TRACK_WIDTH + velocity * (p.second - p.first), QColor(50, 50, 200, 156), velocity);
-                // 长键还没有想好怎么判定和消失
-                addItem(fk);
-                fallingKeys.insert(p.first, fk);
+                FallingKey *key = new FallingKey(i, p.first, p.second, this);
+                addItem(key);
+                fallingKeys.insert(p.first, key);
             }
         }
     }
@@ -267,21 +271,20 @@ void GameScene::setFallingItems() {
 // handle falling animation; functions on certain interval
 void GameScene :: timerFallingKey() {
     int i = 0;
-    int nErase = 0;
+    // int nErase = 0;
 
     for(auto p = fallingKeys.begin();p != fallingKeys.end() ; ++p) {
 //        i++;
-        if (i == nTracks || (p.key() - e_timer.elapsed()) * velocity > trackHeight) break;
-        else {
-            nErase++;
-            FallingKey* fk = p.value();
-            fk->startFalling();
-        }
+        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY > TRACK_HEIGHT) break;
+        // nErase++;
+        FallingKey* fk = p.value();
+        // addItem(fk);
+        if (!fk->isFalling) fk->startFalling();
         i++;
     }
-    qDebug() << e_timer.elapsed()-pause_time << " " << i<<" by timerFallingKey";
-    if (nErase)
-        for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
+    // qDebug() << e_timer.elapsed()-pause_time << " " << i<<" by timerFallingKey";
+//    if (nErase)
+//        for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
 }
 
 // read file
@@ -367,8 +370,8 @@ void GameScene::endInterface() {
 
 GameScene::~GameScene(){
     Total_time = 0;
-    s_timer.stop();
-    s_timer.deleteLater();
+    keyFallingTimer->stop();
+    keyFallingTimer->deleteLater();
     // TODO:理想的情况下手动关闭窗口后程序应当停止运行，但我搞不出来TAT
 }
 
@@ -383,9 +386,17 @@ void GameScene::GoOnGame(){
     for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
         keyVal[i - st] = key_val_[i];
     }
+    // continue music playing
+    player->play();
+    // restart timer events
+    keyFallingTimer->start(INTERVAL);
+    pauseTime += e_timer.elapsed() - pauseClock;
+    // deal with key falling
+    for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
+        if (p.value()->isFalling) {
+            p.value()->resumeFalling();
+        } else break;
+    }
 
-    s_timer.setInterval(100);
-    s_timer.start();
-
-    connect(&s_timer, &QTimer::timeout, this, &GameScene::timerFallingKey);
+    connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
 }

@@ -16,5 +16,6 @@
         <file>resources/detect_line@glow.png</file>
         <file>resources/track_background.png</file>
         <file>resources/track_background.psd</file>
+        <file>resources/mania-note1.png</file>
     </qresource>
 </RCC>

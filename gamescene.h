@@ -74,11 +74,12 @@ private:
     int nTracks; // number of tracks
     int Total_time;
     int pause_time = 0; // to detect pause
+    int pauseTime = 0, pauseClock = 0;  // pauseTime: accumulate pause time; pauseClock: save the tick when the game is paused
     int score, combo; // Score
     int ptr[11]; // To evaluate the press event, Pointer of notes
     qreal trackWidth, trackInterval, trackHeight, track_x;
     qreal velocity; // falling velocity, per msec
-    QTimer s_timer;
+    QTimer *keyFallingTimer;
     QElapsedTimer e_timer;
     QVector<QGraphicsRectItem*> keyItems;   // deprecate in future versions
     int keyVal[6] {Qt::Key_S, Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J, Qt::Key_K};

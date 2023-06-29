@@ -1,38 +1,87 @@
 #include "fallingkey.h"
-#include "QtGui/qbrush.h"
 
-#include <QPropertyAnimation>
-#include <QSequentialAnimationGroup>
 #include <QPainter>
 #include <QDebug>
 
-FallingKey::FallingKey(qreal _x, qreal _y0, qreal _y, qreal _w, qreal _h, QColor _c, int _v, QGraphicsItem* parent) : QGraphicsRectItem(parent),
-    duration(_y / _v), x(_x), min_y(_y0), max_y(_y), w(_w), h(_h), color(_c)
+FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScene *_parent)
+    : startTime(_starttime), endTime(_endtime), trackID(_trackid), parent(_parent)
 {
-    QRectF rect(x, -h, w, h);
+    stylePath = ":/element/resources/mania-note1.png";
+    QPixmap stylePic((QPixmap(stylePath)));
+    setPixmap(stylePic);
+    if (endTime == -1) {
+        setScale((double)TRACK_WIDTH * 0.75 / boundingRect().width());
+        longKey = -1;
+        // set initial position
+        setPos(SCREEN_WIDTH / 2 + (trackID-1.875)*TRACK_WIDTH, -boundingRect().height() * (double)TRACK_WIDTH * 0.75 / boundingRect().width());
+    } else {
+        longKey = (endTime - startTime) / (INTERVAL * VELOCITY); // 计算长键的长度
+        QTransform trans;
+        trans.scale((double)TRACK_WIDTH * 0.75 / boundingRect().width(), longKey / boundingRect().height());
+        setTransform(trans);
+        // set initial position
+        setPos(SCREEN_WIDTH / 2 + (trackID-1.875)*TRACK_WIDTH, -longKey);
+    }
+    // set visible boundary -- not realised yet
+//    QPainterPath path;
+//    path.addRect(SCREEN_WIDTH-(trackID-2)*TRACK_WIDTH, 0, TRACK_WIDTH, TRACK_HEIGHT);
+//    m_boundaryPath = path;
+//    update();
 
-    setRect(rect);
-    setPen(Qt::NoPen);
-    setBrush(color);
-    setOpacity(0);
+    //setOpacity(0);
+    isFalling = false;
 }
+
+// override paint to hide long key (when the key falls over the boundary)
+//void FallingKey::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+//{
+//    // set visible boundary
+//    if(!m_boundaryPath.isEmpty()){
+//        QPainterPath path = mapFromScene(m_boundaryPath);
+//        if(!path.isEmpty())
+//            painter->setClipPath(path);
+//    }
+//    QGraphicsPixmapItem::paint(painter, option, widget);
+//}
 
 void FallingKey::startFalling() {
     qDebug() << "start falling";
     setOpacity(1);
-    QSequentialAnimationGroup* group = new QSequentialAnimationGroup(this);
-    QPropertyAnimation* ani1 = new QPropertyAnimation(this, "y");
-    ani1->setDuration(duration);
-    ani1->setStartValue(min_y);
-    ani1->setEndValue(max_y+2*h);
-    group->addAnimation(ani1);
-    QPropertyAnimation* ani2 = new QPropertyAnimation(this, "opacity");
-    ani2->setDuration(10);
-    ani2->setStartValue(1);
-    ani2->setEndValue(0);
-    ani2->setEasingCurve(QEasingCurve::OutQuart);
-    group->addAnimation(ani2);
-    connect(group, &QSequentialAnimationGroup::finished,
-            this, &FallingKey::deleteLater);
-    group->start();
+    isFalling = true;
+    // set up timer
+    m_timer = new QTimer(this);
+    connect(m_timer, &QTimer::timeout, this, &FallingKey::fall);
+    m_timer->start(INTERVAL);
+}
+
+void FallingKey::pauseFalling()
+{
+    qDebug() << "falling paused";
+    m_timer->stop();
+}
+
+void FallingKey::resumeFalling()
+{
+    qDebug() << "falling continued";
+    m_timer->start(INTERVAL);
+}
+
+void FallingKey::fall()
+{
+    // qDebug() << "key on" << trackID << "fall";
+    setY(pos().y() + VELOCITY);
+    if (pos().y() >= TRACK_HEIGHT && longKey == -1) {
+        m_timer->stop();
+        qDebug() << "end of falling";
+        emit endOfFalling();
+        // deleteLater();
+        setOpacity(0);
+    } else if (longKey != -1) {
+        if (pos().y() >= TRACK_HEIGHT) {
+            m_timer->stop();
+            emit endOfFalling();
+            // deleteLater();
+            setOpacity(0);
+        }
+    }
 }
