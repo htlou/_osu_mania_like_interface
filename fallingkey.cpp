@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QDebug>
+#include "gamescene.h"
 
 FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScene *_parent)
     : startTime(_starttime), endTime(_endtime), trackID(_trackid), parent(_parent)
@@ -10,10 +11,14 @@ FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScen
     QPixmap stylePic((QPixmap(stylePath)));
     setPixmap(stylePic);
     if (endTime == -1) {
-        setScale((double)TRACK_WIDTH * 0.75 / boundingRect().width());
+        QTransform transShort;
+        qreal scale_x = (double)TRACK_WIDTH * 0.75 / boundingRect().width();
+        qreal scale_y = 0.25;
+        transShort.scale(scale_x, scale_y);
+        setTransform(transShort);
         longKey = -1;
         // set initial position
-        setPos(SCREEN_WIDTH / 2 + (trackID-1.875)*TRACK_WIDTH, -boundingRect().height() * (double)TRACK_WIDTH * 0.75 / boundingRect().width());
+        setPos(SCREEN_WIDTH / 2 + (trackID-1.875)*TRACK_WIDTH, -boundingRect().height() * scale_y);
     } else {
         longKey = (endTime - startTime) / (INTERVAL * VELOCITY); // 计算长键的长度
         QTransform trans;
@@ -30,6 +35,7 @@ FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScen
 
     //setOpacity(0);
     isFalling = false;
+    isEndFalling = false;
 }
 
 // override paint to hide long key (when the key falls over the boundary)
@@ -51,6 +57,7 @@ void FallingKey::startFalling() {
     // set up timer
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &FallingKey::fall);
+    connect(this, &FallingKey::endOfFalling, (GameScene*)parent, &GameScene::handleEndOfFalling);
     m_timer->start(INTERVAL);
 }
 
@@ -74,14 +81,15 @@ void FallingKey::fall()
         m_timer->stop();
         qDebug() << "end of falling";
         emit endOfFalling();
-        // deleteLater();
-        setOpacity(0);
+        deleteLater();
+        // setOpacity(0);
     } else if (longKey != -1) {
         if (pos().y() >= TRACK_HEIGHT) {
             m_timer->stop();
+            isEndFalling = true;
             emit endOfFalling();
-            // deleteLater();
-            setOpacity(0);
+            deleteLater();
+            // setOpacity(0);
         }
     }
 }

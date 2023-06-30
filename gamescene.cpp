@@ -113,12 +113,17 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
         AllTimer -> stop();
         player->pause();
         // pause the falling keys
-        for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
-            if (p.value()->isFalling) {
-                p.value()->pauseFalling();
-            } else
-                break;
+        for (int i = 0; i < queueFalling.size(); ++i) {
+            if (queueFalling[i]->isFalling) {
+                queueFalling[i]->pauseFalling();
+            }
         }
+//        for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
+//            if (p.value()->isFalling) {
+//                p.value()->pauseFalling();
+//            } else
+//                break;
+//        }
         pauseClock = e_timer.elapsed();
 //        // emit signal
 //        emit gamePauseSig();
@@ -283,21 +288,27 @@ void GameScene::setFallingItems() {
 
 // handle falling animation; functions on certain interval
 void GameScene :: timerFallingKey() {
-    int i = 0;
-    // int nErase = 0;
+     int i = 0;
+     int nErase = 0;
 
     for(auto p = fallingKeys.begin();p != fallingKeys.end() ; ++p) {
-//        i++;
         if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY > TRACK_HEIGHT) break;
-        // nErase++;
+            nErase++;
         FallingKey* fk = p.value();
-        // addItem(fk);
         if (!fk->isFalling) fk->startFalling();
+        queueFalling.push_back(fk);
         i++;
     }
     // qDebug() << e_timer.elapsed()-pause_time << " " << i<<" by timerFallingKey";
-//    if (nErase)
-//        for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
+    if (nErase)
+        for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
+}
+
+// delete the key at the end of the falling event
+void GameScene::handleEndOfFalling()
+{
+    qDebug() << "handle end of falling";
+    queueFalling.pop_front();
 }
 
 // read file
@@ -406,11 +417,16 @@ void GameScene::GoOnGame(){
     keyFallingTimer->start(INTERVAL);
     pauseTime += e_timer.elapsed() - pauseClock;
     // deal with key falling
-    for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
-        if (p.value()->isFalling) {
-            p.value()->resumeFalling();
-        } else break;
+    for (int i = 0; i < queueFalling.size(); ++i) {
+        if (queueFalling[i]->isFalling) {
+            queueFalling[i]->resumeFalling();
+        }
     }
+//    for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
+//        if (p.value()->isFalling) {
+//            p.value()->resumeFalling();
+//        } else break;
+//    }
 
     connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
 }

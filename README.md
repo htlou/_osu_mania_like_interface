@@ -66,7 +66,7 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 
 1. ```bool isFalling```变量用于判断键是否在下落，方便GameScene的暂停；
 2. GameScene类使用```QTimer *keyFallingTimer```判断当前是否有键下落，```QTimer::timeout```连接槽函数```GameScene::timerFallingKey```
-3. 键在下落到底部的时候会emit signal（这个还没有和slot连接）
+3. 键在下落到底部的时候会emit signal: ```FallingKey::endOfFalling (signal) -> GameScene::handleEndOfFalling (slot)```
 
 #### 2.2 目前下落键存在的问题
 
@@ -86,3 +86,6 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 
 完美实现了暂停（暂停时正在下落的键也会暂停，而且不影响还没下落的键；同时音乐也会暂停）
 
+## 2023/6/30
+
+1. 更改了下落键的处理方式：一旦键开始下落，就把键加到队列queueFalling中，并从multimap里面移除；endOfFalling的时候立即delete下落的键，并且通过GameScene的handleEndOfFalling槽函数清理queueFalling队列
