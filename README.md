@@ -94,4 +94,10 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 
 1. 更改了下落键的处理方式：一旦键开始下落，就把键加到队列queueFalling中，并从multimap里面移除；endOfFalling的时候立即delete下落的键，并且通过GameScene的handleEndOfFalling槽函数清理queueFalling队列
 2. 完善了暂停界面（不再新建窗口，在原有界面上新增一些元素）
+3. 有了初步的选择曲谱界面，修改文件读入存储方式
+
+7.1日希望完成：主菜单界面修改（类似暂停界面）+选择曲谱界面精修；
+我明天准备调试下落键的问题，现在有些bug，如果时间多就做一些数字显示
+
+曲谱录入可以开始做了
 
