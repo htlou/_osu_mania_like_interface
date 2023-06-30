@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QGraphicsItemAnimation>
 #include <QPropertyAnimation>
+#include "globalvariations.h"
 
 class selection_button{
 public:
@@ -19,6 +20,8 @@ public:
 
 class selection_scene : public QGraphicsScene{
 Q_OBJECT
+signals:
+    void selected();
 
 public:
     int Num; // music num
@@ -31,9 +34,10 @@ public:
     void removeItem_(selection_button* button);
     int ReadInt(QFile *file);
     void genAnimationUp();
-    QGraphicsItemAnimation *animation[6];
-    QGraphicsItemAnimation *animation0[6];
-    QTimeLine *timeline[6];
+    void genAnimationDown();
+    QGraphicsItemAnimation *animation[7];
+    QGraphicsItemAnimation *animation0[7];
+    QTimeLine *timeline[7];
 
     void keyPressEvent(QKeyEvent *event);
 

@@ -33,7 +33,7 @@ QGraphicsView* MyMainWindow::initStartMenu()
 
 QGraphicsView* MyMainWindow::initGame()
 {
-    QGraphicsScene *scene = new GameScene(QString("1"),this);
+    QGraphicsScene *scene = new GameScene(SelectedPath,this);
     QGraphicsView *view = new QGraphicsView(scene, this);
     view->setRenderHint(QPainter::Antialiasing);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -62,12 +62,23 @@ void MyMainWindow::enter_select_0()
     currentWidget->deleteLater();
     layout->addWidget(s_view);
     layout->currentWidget()->setFocus();
+
+    connect(scene__,&selection_scene::selected,this,&MyMainWindow::enter_game_0);
     /*QWidget *w = layout->currentWidget();
     layout->removeWidget(w);
     w->deleteLater();
     QGraphicsView* game_view = initGame();
     layout->addWidget(game_view);
     layout->currentWidget()->setFocus(); // 修复进入游戏后不响应键盘事件的问题*/
+}
+
+void MyMainWindow::enter_game_0(){
+    QWidget *w = layout->currentWidget();
+    layout->removeWidget(w);
+    w->deleteLater();
+    QGraphicsView* game_view = initGame();
+    layout->addWidget(game_view);
+    layout->currentWidget()->setFocus(); // 修复进入游戏后不响应键盘事件的问题
 }
 
 void MyMainWindow::enter_settings_0()

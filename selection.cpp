@@ -51,6 +51,11 @@ selection_scene::selection_scene(){
     }
     }
     for(int i = 0; i <= 2; i ++) addItem_(&vec[i]);
+
+    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
+    SelectRect -> setPos(220-10,700-3);
+
+    addItem(SelectRect);
 }
 
 void selection_scene::genAnimationUp(){
@@ -77,6 +82,30 @@ void selection_scene::genAnimationUp(){
     }
 }
 
+void selection_scene::genAnimationDown(){
+    for(int i = central - 2 >= 0 ? central - 2 : 0; i <= central + 3 && i < Num; i ++){
+        int id = i - central + 3;
+        animation[id] = new QGraphicsItemAnimation;
+        animation[id] -> setItem(vec[i].rect);
+        animation0[id] = new QGraphicsItemAnimation;
+        animation0[id] -> setItem(vec[i].txt);
+
+
+        timeline[id] = new QTimeLine(400);
+        timeline[id] -> setLoopCount(1);
+        animation[id] -> setTimeLine(timeline[id]);
+        animation0[id] -> setTimeLine(timeline[id]);
+
+        animation[id]-> setPosAt(0,QPointF(220,(id-3)*100+700));
+        animation[id]-> setPosAt(1,QPointF(220,(id-4)*100+700));
+        animation0[id]-> setPosAt(0,QPointF(230,(id-3)*100+710));
+        animation0[id]-> setPosAt(1,QPointF(230,(id-4)*100+710));
+
+//        qDebug() << "test1111";
+        timeline[id] -> start();
+    }
+}
+
 void selection_scene::keyPressEvent(QKeyEvent* event){
     if (event->isAutoRepeat()) {
         return;
@@ -88,19 +117,20 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
             removeItem_(&vec[i]);
         }
         //Handle Graphics
-
-
-
         central --;
         for(int i = central - 2 >= 0? central - 2 : 0; i <= central + 2 && i < Num; i ++){
             vec[i].posy = (i - central) * 100 + 700;
             addItem_(&vec[i]);
         }
 
+        for(int i = central - 2 >= 0? central - 2 : 0; i <= central + 2 && i < Num; i ++)
+            qDebug() << vec[i].rect -> pos();
+
         }
     }
     else if(event -> key() == Qt::Key_Down){
         if(central + 1 < Num){
+        genAnimationDown();
         for(int i = central - 2 >= 0? central - 2 : 0; i <= central + 2 && i < Num; i ++){
             removeItem_(&vec[i]);
         }
@@ -112,8 +142,10 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         }
         }
     }
-    else if(event -> key() == Qt::Key_Enter){
-        //should be a signal to emit start game.
+    else if(event -> key() == Qt::Key_Enter || event -> key() == Qt::Key_Return){
+        SelectedPath = vec[central].Path;
+        qDebug() << "now Entered" << " " << SelectedPath;
+        emit selected();
     }
 }
 

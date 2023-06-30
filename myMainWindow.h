@@ -26,6 +26,7 @@ signals:
     void goongame();
 public slots:
     void enter_select_0();
+    void enter_game_0();
     void enter_settings_0();
     void quit_game_0();
 //    void close_game_window();

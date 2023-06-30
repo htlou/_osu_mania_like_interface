@@ -225,7 +225,7 @@ void GameScene::startGame(QString Route) {
     Read_Chart_Data((Path+"/"+Route+"/chart.txt"));
     setBackgroundItem(); // 曲绘目前放在这里
     Read_BGM_Data((Path + "/"+Route+"/audio.mp3"));
-//    Read_Img_Data((Path + "/1/BG.jpg"));也可以用这个放置曲绘，没想好
+//    Read_Img_Data((Path + "/"+Route+"/BG.jpg"));也可以用这个放置曲绘，没想好
     setFallingItems();
     // set timer events
     keyFallingTimer = new QTimer(this);
