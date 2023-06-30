@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-
+    //qDebug() << CLOCKS_PER_SEC;
 
     QSize screen = QGuiApplication::primaryScreen()->size();
     SCREEN_WIDTH = screen.width();

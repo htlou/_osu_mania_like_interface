@@ -126,6 +126,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 // maybe some press effect here
 
                 int now_time = clock() - start_time - pause_time;
+                now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
                 while(ptr[i] < tm[i].size() && now_time - tm[i][ptr[i]].first > eps){
                     ptr[i] ++;
                 }
@@ -160,6 +161,8 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
             keyItems[i]->setBrush(QColor(10, 10, 255, 128));
 
             int now_time = clock() - start_time - pause_time;
+            now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+
             int R = tm[i][ptr[i]].second;
             if(R == -1)return;
             int p = abs(now_time - R);
