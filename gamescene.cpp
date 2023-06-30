@@ -16,7 +16,7 @@
 #include "pauseWidget.h"
 #include "ending.h"
 
-GameScene::GameScene(QObject *parent)
+GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
@@ -53,7 +53,7 @@ GameScene::GameScene(QObject *parent)
     connect(player, SIGNAL(errorOccurred(QMediaPlayer::Error, QString)), this, SLOT(onError(QMediaPlayer::Error, QString)));
     // start the game
     status = 1;
-    startGame();
+    startGame(Route);
 }
 
 QString Int2String(int num, int x){ // num位数，x数字，取x后num位转换为QString，不足补0
@@ -215,16 +215,16 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
     }
 }
 
-void GameScene::startGame() {
+void GameScene::startGame(QString Route) {
     eps = eps0;
     eps_good = eps1;
     eps_perfect = eps2;
 //这里是我们用GlobalVariations替换的位置
 
     start_time = clock();
-    Read_Chart_Data((Path+"/1/chart.txt"));
+    Read_Chart_Data((Path+"/"+Route+"/chart.txt"));
     setBackgroundItem(); // 曲绘目前放在这里
-    Read_BGM_Data((Path + "/1/audio.mp3"));
+    Read_BGM_Data((Path + "/"+Route+"/audio.mp3"));
 //    Read_Img_Data((Path + "/1/BG.jpg"));也可以用这个放置曲绘，没想好
     setFallingItems();
     // set timer events

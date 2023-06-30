@@ -20,6 +20,7 @@ SOURCES += \
     myMainWindow.cpp \
     pause.cpp \
     pauseWidget.cpp \
+    selection.cpp \
     settings.cpp
 
 HEADERS += \
@@ -32,6 +33,7 @@ HEADERS += \
     myMainWindow.h \
     pause.h \
     pauseWidget.h \
+    selection.h \
     settings.h
 
 # Default rules for deployment.

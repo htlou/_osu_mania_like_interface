@@ -6,6 +6,7 @@ int music_vol=100;
 int eps0=400,eps1=300,eps2=200;
 double VELOCITY = 10, LATENCY = 1, INTERVAL = 10;
 int TRACK_WIDTH = 1, TRACK_HEIGHT = 1;
+QFont DefaltFont = QFont("Arial",20);
 
 GlobalVariations::GlobalVariations()
 {

@@ -25,7 +25,7 @@ class GameScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    GameScene(QObject *parent = 0);
+    GameScene(QString Route, QObject *parent = 0);
     ~GameScene();
 signals:
    void closethis();
@@ -48,7 +48,7 @@ private:
     QProcess *myProcess;
     MyMainWindow *_parent;
 
-    void startGame();
+    void startGame(QString Route);
     void setBackgroundItem();
     // read file
     void Read_Chart_Data(const QString & Path);

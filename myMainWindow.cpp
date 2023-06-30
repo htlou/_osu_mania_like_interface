@@ -1,6 +1,7 @@
 #include "myMainWindow.h"
 #include "mainmenu.h"
 #include "gamescene.h"
+#include "selection.h"
 
 MyMainWindow::MyMainWindow(QApplication *_app, QWidget *parent)
     : QMainWindow(parent), app(_app)
@@ -32,7 +33,7 @@ QGraphicsView* MyMainWindow::initStartMenu()
 
 QGraphicsView* MyMainWindow::initGame()
 {
-    QGraphicsScene *scene = new GameScene(this);
+    QGraphicsScene *scene = new GameScene(QString("1"),this);
     QGraphicsView *view = new QGraphicsView(scene, this);
     view->setRenderHint(QPainter::Antialiasing);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -47,12 +48,26 @@ QGraphicsView* MyMainWindow::initGame()
 void MyMainWindow::enter_select_0()
 {
     qDebug()<<"select ongoing...";
-    QWidget *w = layout->currentWidget();
+    selection_scene *scene__ = new selection_scene();
+
+    QGraphicsView* s_view = new QGraphicsView(scene__, this);
+    s_view->setRenderHint(QPainter::Antialiasing);
+    s_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    s_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    s_view->setFixedSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+    //s_view -> showFullScreen();
+
+    QWidget* currentWidget = layout->currentWidget();
+    layout->removeWidget(currentWidget);
+    currentWidget->deleteLater();
+    layout->addWidget(s_view);
+    layout->currentWidget()->setFocus();
+    /*QWidget *w = layout->currentWidget();
     layout->removeWidget(w);
     w->deleteLater();
     QGraphicsView* game_view = initGame();
     layout->addWidget(game_view);
-    layout->currentWidget()->setFocus(); // 修复进入游戏后不响应键盘事件的问题
+    layout->currentWidget()->setFocus(); // 修复进入游戏后不响应键盘事件的问题*/
 }
 
 void MyMainWindow::enter_settings_0()

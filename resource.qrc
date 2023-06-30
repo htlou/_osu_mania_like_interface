@@ -23,4 +23,7 @@
         <file>resources/pause-continue.png</file>
         <file>resources/pause-text.png</file>
     </qresource>
+    <qresource prefix="/">
+        <file>data/tree.txt</file>
+    </qresource>
 </RCC>
