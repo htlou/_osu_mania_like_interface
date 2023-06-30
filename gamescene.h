@@ -3,7 +3,11 @@
 
 #include "fallingkey.h"
 #include "globalvariations.h"
+#include "myMainWindow.h"
+#include "pause.h"
+#include "board.h"
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QObject>
 #include <QDebug>
 #include <QKeyEvent>
@@ -35,8 +39,12 @@ protected:
     void keyPressEvent(QKeyEvent* event);
     void keyReleaseEvent(QKeyEvent* event);
 
+signals:
+    void gamePauseSig();
+
 private:
     QProcess *myProcess;
+    QObject *_parent;
 
     void startGame();
     void setBackgroundItem();
@@ -57,6 +65,7 @@ private:
     void Show_combo();
     void Show_score();
     void Change_Number();
+    void endGame();
 
     int s_width;
     int s_height;
@@ -66,19 +75,24 @@ private:
     int nTracks; // number of tracks
     int Total_time;
     int pause_time = 0; // to detect pause
-    int score, combo; // Score
+    int pauseTime = 0, pauseClock = 0;  // pauseTime: accumulate pause time; pauseClock: save the tick when the game is paused
+    int score = 0, combo = 0; // Score
     int ptr[11]; // To evaluate the press event, Pointer of notes
     qreal trackWidth, trackInterval, trackHeight, track_x;
     qreal velocity; // falling velocity, per msec
-    QTimer s_timer;
+    QTimer *keyFallingTimer;
+    QTimer *AllTimer;
     QElapsedTimer e_timer;
     QVector<QGraphicsRectItem*> keyItems;   // deprecate in future versions
     int keyVal[6] {Qt::Key_S, Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J, Qt::Key_K};
     QVector<QPair<int, int> > tm[11];
     QMultiMap<int, FallingKey*> fallingKeys;
+    QVector<DetectLine*> detectLines;
 
     QGraphicsSimpleTextItem* Score_ = new QGraphicsSimpleTextItem("0000000");
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
+
+    QGraphicsSimpleTextItem* Time = new QGraphicsSimpleTextItem("0000000");//see the time.only to debugging
 
     double start_time = 0; // timer
     QString Path; // Music Data Path
@@ -92,5 +106,7 @@ private:
 
 
 };
+
+QString Int2String(int num,int x);
 
 #endif // GAMESCENE_H

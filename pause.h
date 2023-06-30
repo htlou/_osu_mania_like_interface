@@ -68,39 +68,7 @@ public slots:
 public:
     QGraphicsPixmapItem *background;
 
-    PauseScene(QObject *parent = nullptr): QGraphicsScene(parent){
-        PauseSceneButton *gameButton = new PauseSceneButton("Back to game", nullptr);
-        PauseSceneButton *settingsButton = new PauseSceneButton("Settings", nullptr);
-        PauseSceneButton *menuButton = new PauseSceneButton("Exit game& Return to menu", nullptr);
-
-        addItem(gameButton);
-        addItem(settingsButton);
-        addItem(menuButton);
-
-        QPixmap _background(":/img/resources/bg2.jpg");
-        _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
-        background = new QGraphicsPixmapItem(_background);
-        this->addItem(background);
-
-
-        //这里xy位置不对，调一下
-        int y = this->sceneRect().height()/2+gameButton->boundingRect().height() * 2;
-        int x = 2*this->sceneRect().width()/3;
-
-        background->setPos(x,y);
-
-
-        gameButton->setPos(x, y);
-        y += gameButton->boundingRect().height() * 2;
-        settingsButton->setPos(x, y);
-        y += settingsButton->boundingRect().height() * 2;
-        menuButton->setPos(x, y);
-
-        connect(gameButton, &PauseSceneButton::button_pressed, this, &PauseScene::back_game_slot);
-        connect(settingsButton, &PauseSceneButton::button_pressed, this, &PauseScene::enter_settings_slot);
-        connect(menuButton, &PauseSceneButton::button_pressed, this, &PauseScene::back_menu_slot);
-    }
-
+    PauseScene(QObject *parent = nullptr);
 };
 
 class MyPauseWindow : public QMainWindow

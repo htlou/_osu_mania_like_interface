@@ -2,6 +2,7 @@
     <qresource prefix="/img">
         <file>resources/bg1.jpg</file>
         <file>resources/bg2.jpg</file>
+        <file>resources/fail-background.png</file>
     </qresource>
     <qresource prefix="/data">
         <file>data/1.txt</file>
@@ -9,5 +10,12 @@
         <file>data/1/chart.txt</file>
         <file>data/1/audio.mp3</file>
         <file>data/1/bga.mp4</file>
+    </qresource>
+    <qresource prefix="/element">
+        <file>resources/detect_line.png</file>
+        <file>resources/detect_line@glow.png</file>
+        <file>resources/track_background.png</file>
+        <file>resources/track_background.psd</file>
+        <file>resources/mania-note1.png</file>
     </qresource>
 </RCC>
