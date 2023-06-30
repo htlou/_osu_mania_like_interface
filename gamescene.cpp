@@ -12,7 +12,8 @@
 #include <QDir>
 
 #include <QGraphicsTextItem>
-#include "pause.h"
+//#include "pause.h"
+#include "pauseWidget.h"
 #include "ending.h"
 
 GameScene::GameScene(QObject *parent)
@@ -118,21 +119,32 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 queueFalling[i]->pauseFalling();
             }
         }
-//        for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
-//            if (p.value()->isFalling) {
-//                p.value()->pauseFalling();
-//            } else
-//                break;
-//        }
         pauseClock = e_timer.elapsed();
 //        // emit signal
 //        emit gamePauseSig();
-        MyPauseWindow *PauseWindow = new MyPauseWindow;
-
-        connect(PauseWindow, &MyPauseWindow::closeGameAndPauseWindow, this, &GameScene::handleCloseGameAndPauseWindow);
-        connect(PauseWindow, &MyPauseWindow::goongame, this, &GameScene::GoOnGame);
-        PauseWindow->showFullScreen();
-
+        // 这里的暂停界面得全部重写：不能在原界面的基础上加view，只能加一些QGraphicsPixmapItem
+        // background color (half transparent)
+        QRect BGRect(0, SCREEN_HEIGHT*0.3, SCREEN_WIDTH, SCREEN_HEIGHT*0.3);
+        pauseBGRect = new QGraphicsRectItem(BGRect);
+        pauseBGRect->setBrush(Qt::black);
+        pauseBGRect->setOpacity(0.3);
+        addItem(pauseBGRect);
+        // button
+        btnContinue = new PauseButton("pause-continue");
+        btnContinue->setPos(SCREEN_WIDTH *0.35, SCREEN_HEIGHT * 0.55);
+        addItem(btnContinue);
+        btnBack = new PauseButton("pause-back");
+        btnBack->setPos(SCREEN_WIDTH *0.65, SCREEN_HEIGHT * 0.55);
+        addItem(btnBack);
+        connect(btnContinue, &PauseButton::button_clicked, this, &GameScene::GoOnGame);
+        connect(btnBack, &PauseButton::button_clicked, this, &GameScene::handleCloseGameAndPauseWindow);
+        // PAUSE text
+        QPixmap pauseText(":/element/resources/pause-text.png");
+        pauseBGText = new QGraphicsPixmapItem(pauseText);
+        pauseBGText->setOffset(-pauseText.width()/2, -pauseText.height()/2);
+        pauseBGText->setScale(SCREEN_WIDTH*0.3 / pauseText.width());
+        pauseBGText->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.4);
+        addItem(pauseBGText);
         pause_time += clock() - start_pause;
     }
     else {
@@ -411,6 +423,11 @@ void GameScene::GoOnGame(){
     for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
         keyVal[i - st] = key_val_[i];
     }
+    // delete pause interface
+    btnContinue->deleteLater();
+    btnBack->deleteLater();
+    delete pauseBGText;
+    delete pauseBGRect;
     // continue music playing
     player->play();
     // restart timer events

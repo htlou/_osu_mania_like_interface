@@ -17,5 +17,10 @@
         <file>resources/track_background.png</file>
         <file>resources/track_background.psd</file>
         <file>resources/mania-note1.png</file>
+        <file>resources/pause-back-hover.png</file>
+        <file>resources/pause-back.png</file>
+        <file>resources/pause-continue-hover.png</file>
+        <file>resources/pause-continue.png</file>
+        <file>resources/pause-text.png</file>
     </qresource>
 </RCC>

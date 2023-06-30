@@ -78,6 +78,10 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 
 暂停的时候，还没有下落的键会叠在一起（这个问题已经解决了，gamescene.cpp的第278行加了pauseTime）
 
+#### 2.3 暂停功能的实现
+
+
+
 # 日志部分
 
 ## 2023/6/29
@@ -89,3 +93,5 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 ## 2023/6/30
 
 1. 更改了下落键的处理方式：一旦键开始下落，就把键加到队列queueFalling中，并从multimap里面移除；endOfFalling的时候立即delete下落的键，并且通过GameScene的handleEndOfFalling槽函数清理queueFalling队列
+2. 完善了暂停界面（不再新建窗口，在原有界面上新增一些元素）
+

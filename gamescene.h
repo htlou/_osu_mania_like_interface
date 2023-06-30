@@ -4,7 +4,8 @@
 #include "fallingkey.h"
 #include "globalvariations.h"
 #include "myMainWindow.h"
-#include "pause.h"
+//#include "pause.h"
+#include "pauseWidget.h"
 #include "board.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -106,6 +107,10 @@ private:
     QMediaPlayer *player = new QMediaPlayer;
     QAudioOutput *audioOutput = new QAudioOutput;
 
+    // pause interface items
+    PauseButton *btnContinue, *btnBack;
+    QGraphicsRectItem *pauseBGRect;
+    QGraphicsPixmapItem *pauseBGText;
 
 };
 
