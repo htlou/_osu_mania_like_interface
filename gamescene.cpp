@@ -16,7 +16,7 @@
 #include "ending.h"
 
 GameScene::GameScene(QObject *parent)
-    : QGraphicsScene(parent), _parent(parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
+    : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
     start_time = clock();
@@ -433,14 +433,19 @@ void GameScene::GoOnGame(){
 
 void GameScene::endGame(){
     EndingScene* eScene = new EndingScene(this,score);
-    QGraphicsView* eview = new QGraphicsView(eScene);
-    //eview->setRenderHint(QPainter::Antialiasing);
-    //eview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //eview->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //eview->setFixedSize(eScene->sceneRect().size().toSize());
+    QGraphicsView* eview = new QGraphicsView(eScene, _parent); // 这里必须要加第二个参数_parent，否则会弹出一个新界面
+    eview->setRenderHint(QPainter::Antialiasing);
+    eview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    eview->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    eview->setFixedSize(eScene->sceneRect().size().toSize());
     //eview->showFullScreen();
-
-    //tips:here should be modified by QSTACK
+    // remove game view
+    QWidget *w = _parent->layout->currentWidget();
+    _parent->layout->removeWidget(w);
+    w->deleteLater();
+    // qDebug() << "game scene succefully removed!";
+    _parent->layout->addWidget(eview);
+    _parent->layout->currentWidget()->setFocus();
     //the necessary ending scene is completed.
     keyFallingTimer -> stop();
     AllTimer -> stop();

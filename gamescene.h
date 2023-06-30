@@ -45,7 +45,7 @@ signals:
 
 private:
     QProcess *myProcess;
-    QObject *_parent;
+    MyMainWindow *_parent;
 
     void startGame();
     void setBackgroundItem();
