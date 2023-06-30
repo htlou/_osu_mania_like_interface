@@ -17,7 +17,7 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
     this->addItem(background);
 
     YrScore = new QGraphicsSimpleTextItem((QString)("Your Score"));
-    Final_Score = new QGraphicsSimpleTextItem(Int2String_(Score,7));
+    Final_Score = new QGraphicsSimpleTextItem(Int2String_(7,Score));
     Instruction = new QGraphicsSimpleTextItem("Press Any Key to return...");
 
     YrScore -> setFont(QFont("Arial",20));
@@ -27,7 +27,7 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
     //Like Phigros, a logo indicating S,A,B,C is needed
 
     YrScore -> setPos(300,300);
-    Final_Score -> setPos(400,300);
+    Final_Score -> setPos(400,400);
     Instruction -> setPos(700,100);
 
     this -> addItem(YrScore);
