@@ -17,6 +17,7 @@ public:
     virtual void resumeFalling();
 //    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     bool isFalling; // 键是否正在下落；用于和主界面交互，方便暂停下落
+    bool isEndFalling; // 是否结束下落，用于和主界面交互
 signals:
     void endOfFalling();
 public slots:

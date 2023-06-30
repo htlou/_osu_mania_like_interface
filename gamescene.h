@@ -34,6 +34,7 @@ public slots:
     void onError(QMediaPlayer::Error error, QString);
     void handleCloseGameAndPauseWindow();
     void GoOnGame();
+    void handleEndOfFalling();
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -86,6 +87,7 @@ private:
     QVector<QPair<int, int> > tm[11];
     QMultiMap<int, FallingKey*> fallingKeys;
     QVector<DetectLine*> detectLines;
+    QQueue<FallingKey*> queueFalling;
 
     QGraphicsSimpleTextItem* Score_ = new QGraphicsSimpleTextItem("0000000");
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
