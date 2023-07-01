@@ -3,6 +3,13 @@
         <file>resources/bg1.jpg</file>
         <file>resources/bg2.jpg</file>
         <file>resources/fail-background.png</file>
+        <file>resources/menu-background-1.jpg</file>
+        <file>resources/menu-background-2.jpg</file>
+        <file>resources/menu-background-3.jpg</file>
+        <file>resources/menu-background-4.jpg</file>
+        <file>resources/menu-background-5.jpg</file>
+        <file>resources/menu-background-6.jpg</file>
+        <file>resources/menu-background-7.jpg</file>
     </qresource>
     <qresource prefix="/data">
         <file>data/1.txt</file>
@@ -22,6 +29,7 @@
         <file>resources/pause-continue-hover.png</file>
         <file>resources/pause-continue.png</file>
         <file>resources/pause-text.png</file>
+        <file>resources/psu-icon.png</file>
     </qresource>
     <qresource prefix="/">
         <file>data/tree.txt</file>
