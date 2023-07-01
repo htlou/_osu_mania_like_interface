@@ -9,18 +9,6 @@ selection_button::selection_button(QString txt_, QString pth, int Y){
     txt = new QGraphicsSimpleTextItem(m_text);
 }
 
-int selection_scene :: ReadInt(QFile* file){
-    char c = 0; int ans = 0;
-    file -> getChar(&c);
-    while(c < '0' || c > '9')file -> getChar(&c);
-    while(c >= '0' && c <= '9'){
-        ans = ans * 10 + c - '0';
-        bool flag = file -> getChar(&c);
-        if(flag == 0) return ans;
-    }
-    return ans;
-}
-
 void selection_scene::addItem_(selection_button* button, qreal op){
     button -> rect -> setPos(Lbound, button -> posy);
     button -> txt -> setPos(10+Lbound, button -> posy + 10);
@@ -40,7 +28,6 @@ void selection_scene::removeItem_(selection_button* button){
 
 selection_scene::selection_scene(){
     QFile file(":/data/tree.txt");
-    //Num = ReadInt(&file);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
     QTextStream stream(&file);
     central = 0;
@@ -106,7 +93,6 @@ void selection_scene::genAnimationUp(){
         animation0[id]-> setPosAt(0,QPointF(Lbound + 10,(id-3)*100+10+Central_py));
         animation0[id]-> setPosAt(1,QPointF(Lbound + 10,(id-2)*100+10+Central_py));
 
-        //        qDebug() << "test1111";
         timeline[id] -> start();
     }
 }

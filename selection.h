@@ -35,7 +35,6 @@ public:
     selection_scene();
     void addItem_(selection_button* button, qreal op);
     void removeItem_(selection_button* button);
-    int ReadInt(QFile *file);
     void genAnimationUp();
     void genAnimationDown();
     QGraphicsItemAnimation *animation[7];
