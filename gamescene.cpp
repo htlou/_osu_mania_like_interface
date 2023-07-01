@@ -157,7 +157,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 // maybe some press effect here
                 detectLines[i]->onKeyPress();
 
-                int now_time = clock() - start_time - pause_time;
+                int now_time = e_timer.elapsed() - pause_time;
                 now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
                 qDebug()<< i <<" " << now_time<<" "<< "pressed";
                 while(ptr[i] < tm[i].size() && now_time - tm[i][ptr[i]].first > eps){
@@ -201,7 +201,7 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
             // deactivate key shape (color)
             detectLines[i]->onKeyRelease();
 
-            int now_time = clock() - start_time - pause_time;
+            int now_time = e_timer.elapsed() - pause_time;
             now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
 
             int R = tm[i][ptr[i]].second;
@@ -496,8 +496,8 @@ void GameScene::endgame0(){
 }
 
 void GameScene::checkMiss(){
-    int now_time = clock() - start_time - pause_time;
-    now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+    int now_time = e_timer.elapsed() - pause_time;
+    //now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
     for(int i = 0; i < nTracks; i ++){
         qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
         if((now_time - tm[i][ptr[i]].first) > eps && !pressed_and_long[i]){
