@@ -49,6 +49,7 @@ private:
     MyMainWindow *_parent;
 
     void startGame(QString Route);
+    void pauseGame();
     void setBackgroundItem();
     // read file
     void Read_Chart_Data(const QString & Path);

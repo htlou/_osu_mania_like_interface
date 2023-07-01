@@ -6,10 +6,12 @@
 MainMenu::MainMenu(QObject *parent): QGraphicsScene(parent){
 
     // add background for the start menu
-    QPixmap _background(QPixmap(":/img/resources/fail-background.png"));
-    _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    QPixmap _background(QPixmap(":/img/resources/menu-background-1.jpg"));
+    _background = _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     background = new QGraphicsPixmapItem(_background);
-    background->setPos(-(_background.width()-SCREEN_WIDTH)/2, -(_background.height()-SCREEN_HEIGHT)/2);
+    //background->setOffset(-_background.width()/2, -_background.height()/2);
+    //background->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+    background->setPos(-(_background.width()-SCREEN_WIDTH), 0);
     addItem(background);
 
     MainMenuButton *startButton = new MainMenuButton("Start", nullptr);
@@ -55,26 +57,26 @@ void MainMenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->drawText(boundingRect(), Qt::AlignCenter, m_text);
 }
 
-void MainMenuButton::mousePressEvent(QGraphicsSceneMouseEvent *event){
+void MainMenuButton::mousePressEvent(__attribute__ ((unused))QGraphicsSceneMouseEvent *event){
     m_pressed = true;
     update();
 //    QGraphicsObject::mousePressEvent(event);
 }
 
-void MainMenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
+void MainMenuButton::mouseReleaseEvent(__attribute__ ((unused))QGraphicsSceneMouseEvent *event){
     m_pressed = false;
     update();
     emit button_pressed();
 //    QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void MainMenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
+void MainMenuButton::hoverEnterEvent(__attribute__ ((unused))QGraphicsSceneHoverEvent *event){
     m_hover = true;
     update();
 //    QGraphicsObject::hoverEnterEvent(event);
 }
 
-void MainMenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
+void MainMenuButton::hoverLeaveEvent(__attribute__ ((unused))QGraphicsSceneHoverEvent *event) {
     m_hover = false;
     update();
 //    QGraphicsItem::hoverLeaveEvent(event);

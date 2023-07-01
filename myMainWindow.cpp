@@ -39,6 +39,12 @@ QGraphicsView* MyMainWindow::initGame()
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setFixedSize(scene->sceneRect().size().toSize());
+//    // set bounding area
+//    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+//    view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing);
+//    view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+//    QRectF visibilityRect(0, 0, SCREEN_WIDTH, TRACK_HEIGHT);
+//    view->setMask(visibilityRect.toRect());  // 设置裁剪区域为可见范围
     // handle closethis emitted from scene
     connect((GameScene*)scene, &GameScene::closethis, this, &MyMainWindow::close_from_pause);
     //view->setWindowFlags(Qt::Window); // 不要再创建一个顶级窗口了
@@ -73,12 +79,19 @@ void MyMainWindow::enter_select_0()
 }
 
 void MyMainWindow::enter_game_0(){
+    // layout->setStackingMode(QStackedLayout::StackAll);
     QWidget *w = layout->currentWidget();
     layout->removeWidget(w);
     w->deleteLater();
     QGraphicsView* game_view = initGame();
     layout->addWidget(game_view);
     layout->currentWidget()->setFocus(); // 修复进入游戏后不响应键盘事件的问题
+//    QGraphicsSimpleTextItem* test = new QGraphicsSimpleTextItem(QString("Test Text"));
+//    QGraphicsScene* second_scene = new QGraphicsScene(this);
+//    second_scene->addItem(test);
+//    QGraphicsView* second_view = new QGraphicsView(second_scene, this);
+//    layout->addWidget(second_view);
+
 }
 
 void MyMainWindow::enter_settings_0()

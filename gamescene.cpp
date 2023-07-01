@@ -107,45 +107,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
     }
 
     if(event->key()== Qt::Key_Escape && status){
-        // stop timer, record pause time
-        qDebug()<<"stop!!!";
-        double start_pause = clock();
-        keyFallingTimer->stop();
-        AllTimer -> stop();
-        player->pause();
-        // pause the falling keys
-        for (int i = 0; i < queueFalling.size(); ++i) {
-            if (queueFalling[i]->isFalling) {
-                queueFalling[i]->pauseFalling();
-            }
-        }
-        pauseClock = e_timer.elapsed();
-//        // emit signal
-//        emit gamePauseSig();
-        // 这里的暂停界面得全部重写：不能在原界面的基础上加view，只能加一些QGraphicsPixmapItem
-        // background color (half transparent)
-        QRect BGRect(0, SCREEN_HEIGHT*0.3, SCREEN_WIDTH, SCREEN_HEIGHT*0.3);
-        pauseBGRect = new QGraphicsRectItem(BGRect);
-        pauseBGRect->setBrush(Qt::black);
-        pauseBGRect->setOpacity(0.3);
-        addItem(pauseBGRect);
-        // button
-        btnContinue = new PauseButton("pause-continue");
-        btnContinue->setPos(SCREEN_WIDTH *0.35, SCREEN_HEIGHT * 0.55);
-        addItem(btnContinue);
-        btnBack = new PauseButton("pause-back");
-        btnBack->setPos(SCREEN_WIDTH *0.65, SCREEN_HEIGHT * 0.55);
-        addItem(btnBack);
-        connect(btnContinue, &PauseButton::button_clicked, this, &GameScene::GoOnGame);
-        connect(btnBack, &PauseButton::button_clicked, this, &GameScene::handleCloseGameAndPauseWindow);
-        // PAUSE text
-        QPixmap pauseText(":/element/resources/pause-text.png");
-        pauseBGText = new QGraphicsPixmapItem(pauseText);
-        pauseBGText->setOffset(-pauseText.width()/2, -pauseText.height()/2);
-        pauseBGText->setScale(SCREEN_WIDTH*0.3 / pauseText.width());
-        pauseBGText->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.4);
-        addItem(pauseBGText);
-        pause_time += clock() - start_pause;
+        pauseGame();
     }
     else {
         for (int i = 0; i < nTracks; ++i) {
@@ -439,13 +401,48 @@ void GameScene::GoOnGame(){
             queueFalling[i]->resumeFalling();
         }
     }
-//    for (auto p = fallingKeys.begin(); p != fallingKeys.end(); ++p) {
-//        if (p.value()->isFalling) {
-//            p.value()->resumeFalling();
-//        } else break;
-//    }
-
     connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
+}
+
+void GameScene::pauseGame()
+{
+    // stop timer, record pause time
+    qDebug()<<"stop!!!";
+    double start_pause = clock();
+    keyFallingTimer->stop();
+    AllTimer -> stop();
+    player->pause();
+    // pause the falling keys
+    for (int i = 0; i < queueFalling.size(); ++i) {
+        if (queueFalling[i]->isFalling) {
+            queueFalling[i]->pauseFalling();
+        }
+    }
+    pauseClock = e_timer.elapsed();
+    // pause interface
+    // background color (half transparent)
+    QRect BGRect(0, SCREEN_HEIGHT*0.3, SCREEN_WIDTH, SCREEN_HEIGHT*0.3);
+    pauseBGRect = new QGraphicsRectItem(BGRect);
+    pauseBGRect->setBrush(Qt::black);
+    pauseBGRect->setOpacity(0.3);
+    addItem(pauseBGRect);
+    // button
+    btnContinue = new PauseButton("pause-continue");
+    btnContinue->setPos(SCREEN_WIDTH *0.35, SCREEN_HEIGHT * 0.55);
+    addItem(btnContinue);
+    btnBack = new PauseButton("pause-back");
+    btnBack->setPos(SCREEN_WIDTH *0.65, SCREEN_HEIGHT * 0.55);
+    addItem(btnBack);
+    connect(btnContinue, &PauseButton::button_clicked, this, &GameScene::GoOnGame);
+    connect(btnBack, &PauseButton::button_clicked, this, &GameScene::handleCloseGameAndPauseWindow);
+    // PAUSE text
+    QPixmap pauseText(":/element/resources/pause-text.png");
+    pauseBGText = new QGraphicsPixmapItem(pauseText);
+    pauseBGText->setOffset(-pauseText.width()/2, -pauseText.height()/2);
+    pauseBGText->setScale(SCREEN_WIDTH*0.3 / pauseText.width());
+    pauseBGText->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.4);
+    addItem(pauseBGText);
+    pause_time += clock() - start_pause;
 }
 
 void GameScene::endGame(){
