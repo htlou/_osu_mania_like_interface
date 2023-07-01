@@ -6,6 +6,7 @@
 MyMainWindow::MyMainWindow(QApplication *_app, QWidget *parent)
     : QMainWindow(parent), app(_app)
 {
+    SCREEN_SCALE = qMin(SCREEN_WIDTH / 2560., SCREEN_HEIGHT / 1440.);
     layout = new QStackedLayout;
     layout->addWidget(initStartMenu());
 }

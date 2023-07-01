@@ -13,8 +13,9 @@
 #include <QTimer>
 #include <QElapsedTimer>
 #include <gamescene.h>
+#include "menubutton.h"
 
-
+// Only for test purpose, to be deprecated in final version
 class MainMenuButton : public QGraphicsObject{
     Q_OBJECT
 public:

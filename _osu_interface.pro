@@ -17,6 +17,7 @@ SOURCES += \
     globalvariations.cpp \
     main.cpp \
     mainmenu.cpp \
+    menubutton.cpp \
     myMainWindow.cpp \
     pause.cpp \
     pauseWidget.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     gamescene.h \
     globalvariations.h \
     mainmenu.h \
+    menubutton.h \
     myMainWindow.h \
     pause.h \
     pauseWidget.h \
