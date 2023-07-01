@@ -104,4 +104,5 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 1. 修改了FallingKeys，现在已经可以正常判定
 2. 把Selection上下改成了WS，比较符合人类习惯，Enter改成了Space，方便开始。
 3. 做了初步selection的渐变动画
+4. 重新设计了开始界面的UI，现在是能看的版本了（后面可以考虑在开始界面之前加一段动画）
 
