@@ -120,6 +120,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
 
                 int now_time = clock() - start_time - pause_time;
                 now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+                qDebug()<< i <<" " << now_time<<" "<< "pressed";
                 while(ptr[i] < tm[i].size() && now_time - tm[i][ptr[i]].first > eps){
                     ptr[i] ++;
                 }
@@ -193,14 +194,13 @@ void GameScene::startGame(QString Route) {
     eps_good = eps1;
     eps_perfect = eps2;
 //这里是我们用GlobalVariations替换的位置
-
-    start_time = clock();
     Read_Chart_Data((Path+"/"+Route+"/chart.txt"));
     setBackgroundItem(); // 曲绘目前放在这里
     Read_BGM_Data((Path + "/"+Route+"/audio.mp3"));
 //    Read_Img_Data((Path + "/"+Route+"/BG.jpg"));也可以用这个放置曲绘，没想好
     setFallingItems();
     // set timer events
+
     keyFallingTimer = new QTimer(this);
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
@@ -212,6 +212,7 @@ void GameScene::startGame(QString Route) {
     qDebug() << "FUUFUFUFUFUFU" << Total_time;
 
     e_timer.start();
+    start_time = clock();
     connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
     connect(AllTimer,&QTimer::timeout,this,&GameScene::endGame);
     connect(chkMiss,&QTimer::timeout,this,&GameScene::checkMiss);
@@ -240,7 +241,7 @@ void GameScene::setBackgroundItem() {
         addItem(dl);
     }
 
-    QFont font("Arial", 30); // 初始化得分与Combo
+    QFont font(DefaultFont); // 初始化得分与Combo
     Score_ -> setPos(SCREEN_WIDTH-300,100);
     Score_ -> setBrush(Qt::white);
     Score_ -> setFont(font);
@@ -494,7 +495,7 @@ void GameScene::checkMiss(){
     int now_time = clock() - start_time - pause_time;
     now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
     for(int i = 0; i < nTracks; i ++){
-//        qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
+        qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
         if((now_time - tm[i][ptr[i]].first) > eps && !pressed_and_long[i]){
             Miss();
             ptr[i] ++;

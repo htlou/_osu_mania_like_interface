@@ -34,4 +34,9 @@
     <qresource prefix="/">
         <file>data/tree.txt</file>
     </qresource>
+    <qresource prefix="/font">
+        <file>Saria_Default.ttf</file>
+        <file>Saria_Italic.ttf</file>
+        <file>font/Saira/static/Saira_Expanded-SemiBold.ttf</file>
+    </qresource>
 </RCC>
