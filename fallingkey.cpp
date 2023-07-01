@@ -20,7 +20,7 @@ FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScen
         // set initial position
         setPos(SCREEN_WIDTH / 2 + (trackID-1.875)*TRACK_WIDTH, -boundingRect().height() * scale_y);
     } else {
-        longKey = (endTime - startTime) / (VELOCITY); // 计算长键的长度
+        longKey = (endTime - startTime) / (VELOCITY / INTERVAL); // 计算长键的长度
         QTransform trans;
         trans.scale((double)TRACK_WIDTH * 0.75 / boundingRect().width(), longKey / boundingRect().height());
         setTransform(trans);

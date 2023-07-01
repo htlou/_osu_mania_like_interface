@@ -43,6 +43,7 @@ protected:
 
 signals:
     void gamePauseSig();
+    void end000();
 
 private:
     QProcess *myProcess;
@@ -68,6 +69,7 @@ private:
     void Show_score();
     void Change_Number();
     void endGame();
+    void endgame0();
 
     int s_width;
     int s_height;

@@ -41,6 +41,7 @@ QGraphicsView* MyMainWindow::initGame()
     view->setFixedSize(scene->sceneRect().size().toSize());
     // handle closethis emitted from scene
     connect((GameScene*)scene, &GameScene::closethis, this, &MyMainWindow::close_from_pause);
+    connect((GameScene*)scene,&GameScene::end000,this,&MyMainWindow::close_from_game);
     //view->setWindowFlags(Qt::Window); // 不要再创建一个顶级窗口了
     return view;
 }
@@ -54,7 +55,7 @@ void MyMainWindow::enter_select_0()
     s_view->setRenderHint(QPainter::Antialiasing);
     s_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     s_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    s_view->setFixedSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+    s_view->setFixedSize(scene__->sceneRect().size().toSize());
     //s_view -> showFullScreen();
 
     QWidget* currentWidget = layout->currentWidget();
@@ -64,6 +65,7 @@ void MyMainWindow::enter_select_0()
     layout->currentWidget()->setFocus();
 
     connect(scene__,&selection_scene::selected,this,&MyMainWindow::enter_game_0);
+
     /*QWidget *w = layout->currentWidget();
     layout->removeWidget(w);
     w->deleteLater();
@@ -132,6 +134,13 @@ void MyMainWindow :: return_from_settings(){
 
 void MyMainWindow::close_from_pause()
 {
+    QWidget* w = layout->currentWidget();
+    layout->removeWidget(w);
+    layout->addWidget(initStartMenu());
+    layout->currentWidget()->setFocus();
+}
+
+void MyMainWindow::close_from_game(){
     QWidget* w = layout->currentWidget();
     layout->removeWidget(w);
     layout->addWidget(initStartMenu());

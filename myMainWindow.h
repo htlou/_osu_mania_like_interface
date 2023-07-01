@@ -33,6 +33,7 @@ public slots:
     void return_from_settings();
     // void pause_game();
     void close_from_pause();
+    void close_from_game();
 
 private:
     QGraphicsView* initStartMenu();

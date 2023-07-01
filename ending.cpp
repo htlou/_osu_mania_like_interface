@@ -32,6 +32,7 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
 
     this -> addItem(YrScore);
     this -> addItem(Final_Score);
+    this -> addItem(Instruction);
 }
 
 void EndingScene::keyPressEvent(QKeyEvent *event){

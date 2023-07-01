@@ -164,9 +164,9 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 }
 
                 // qDebug() << i << " " << ptr[i] << " " << now_time;
-                qDebug() << "ptr[" << i << "]:  " << ptr[i];
-                qDebug() << "tm[" << i << "].size() = " << tm[i].size();
-                qDebug() << now_time;
+//                qDebug() << "ptr[" << i << "]:  " << ptr[i];
+//                qDebug() << "tm[" << i << "].size() = " << tm[i].size();
+//                qDebug() << now_time;
                 int p = abs(now_time - tm[i][ptr[i]].first);
                 if(p <= eps){
                     if(tm[i][ptr[i]].second == -1){
@@ -175,9 +175,12 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                         else Correct_Normal();
                         ptr[i]++;
                     }
+                    else{
+                        qDebug() << "Long Start!";
+                    }
                 }
                 else{
-                    if(now_time > tm[i][ptr[i]].first)tm[i][ptr[i]].second = -1;
+                    if(now_time > tm[i][ptr[i]].first + eps)tm[i][ptr[i]].second = -1;
                     Miss();
                 }
             }
@@ -251,6 +254,7 @@ void GameScene::setBackgroundItem() {
     // osu!mania keys and tracks (set default to 4 tracks)
     // nTracks = 4;
     qDebug() << nTracks << " This is ntrack";
+    qDebug() << "This is track height: " << TRACK_HEIGHT;
 
     // show board and fixed boundary lines
     Board *trackBoard = new Board;
@@ -304,10 +308,10 @@ void GameScene :: timerFallingKey() {
      int nErase = 0;
 
     for(auto p = fallingKeys.begin();p != fallingKeys.end() ; ++p) {
-        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY > TRACK_HEIGHT) break;
+        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY / INTERVAL > TRACK_HEIGHT) break;
             nErase++;
         FallingKey* fk = p.value();
-        if (!fk->isFalling) fk->startFalling();
+            if (!fk->isFalling) fk->startFalling(), qDebug() << "fall!" << e_timer.elapsed();
         queueFalling.push_back(fk);
         i++;
     }
@@ -320,6 +324,7 @@ void GameScene :: timerFallingKey() {
 void GameScene::handleEndOfFalling()
 {
     qDebug() << "handle end of falling";
+    qDebug() << e_timer.elapsed() - pause_time << " " << e_timer.elapsed() << " " << pause_time;
     queueFalling.pop_front();
 }
 
@@ -344,7 +349,7 @@ void GameScene :: Read_Chart_Data(const QString & Path){
     nTracks = Track_num;
     Total_time = ReadInt(&file);
 
-    Total_time = 11000; // Just for debugging
+    //Total_time = 11000; // Just for debugging
     //decide KeyVal
     for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
             keyVal[i - st] = key_val_[i];
@@ -466,4 +471,10 @@ void GameScene::endGame(){
     //the necessary ending scene is completed.
     keyFallingTimer -> stop();
     AllTimer -> stop();
+
+    connect(eScene,&EndingScene::quit_,this,&GameScene::endgame0);
+}
+
+void GameScene::endgame0(){
+    emit end000();
 }
