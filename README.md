@@ -99,5 +99,9 @@ GameScene中使用keyFallingTimer每隔INTERVAL毫秒判断是否有键下落，
 7.1日希望完成：主菜单界面修改（类似暂停界面）+选择曲谱界面精修；
 我明天准备调试下落键的问题，现在有些bug，如果时间多就做一些数字显示
 
-曲谱录入可以开始做了
+## 2023/7/1
+
+1. 修改了FallingKeys，现在已经可以正常判定
+2. 把Selection上下改成了WS，比较符合人类习惯，Enter改成了Space，方便开始。
+3. 做了初步selection的渐变动画
 

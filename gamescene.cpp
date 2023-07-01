@@ -70,26 +70,25 @@ void GameScene::Change_Number(){
     Score_ -> setText(Int2String(7, score));
     Combo_ -> setText(Int2String(3, combo));
     Time -> setText(Int2String(7,e_timer.elapsed()));
-    qDebug() << score << " Fuck";
 }
 
 void GameScene::Correct_Perfect(){
-    score += 114514;
     combo ++;
+    score += ((combo < 10) ? combo : 10) * 1000;
     Change_Number();
     qDebug() << "Perfect!\n";
 }
 
 void GameScene::Correct_Good(){
-    score += 66666;
     combo ++;
+    score += ((combo < 10) ? combo : 10) * 800;
     Change_Number();
     qDebug() << "Good!\n";
 }
 
 void GameScene::Correct_Normal(){
-    score += 23333;
     combo ++;
+    score += ((combo < 10) ? combo : 10) * 500;
     Change_Number();
     qDebug() << "Normal!\n";
 }
@@ -126,9 +125,9 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 }
 
                 // qDebug() << i << " " << ptr[i] << " " << now_time;
-                qDebug() << "ptr[" << i << "]:  " << ptr[i];
-                qDebug() << "tm[" << i << "].size() = " << tm[i].size();
-                qDebug() << now_time;
+//                qDebug() << "ptr[" << i << "]:  " << ptr[i];
+//                qDebug() << "tm[" << i << "].size() = " << tm[i].size();
+//                qDebug() << now_time;
                 int p = abs(now_time - tm[i][ptr[i]].first);
                 if(p <= eps){
                     if(tm[i][ptr[i]].second == -1){
@@ -136,10 +135,15 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                         else if(p <= eps_good)Correct_Good();
                         else Correct_Normal();
                         ptr[i]++;
+
+                    }
+                    else{
+                        pressed_and_long[i] = 1;
+                        qDebug() << "Long Start!";
                     }
                 }
                 else{
-                    if(now_time > tm[i][ptr[i]].first)tm[i][ptr[i]].second = -1;
+                    if(now_time > tm[i][ptr[i]].first + eps)tm[i][ptr[i]].second = -1;
                     Miss();
                 }
             }
@@ -153,25 +157,32 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
     }
     for (int i = 0; i < nTracks; ++i) {
         if (event->key() == keyVal[i]) {
+            pressed_and_long[i] = 0;
             // deactivate key shape (color)
             detectLines[i]->onKeyRelease();
-            // keyItems[i]->setBrush(QColor(10, 10, 255, 128));
 
             int now_time = clock() - start_time - pause_time;
             now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
 
             int R = tm[i][ptr[i]].second;
-            if(R == -1)return;
-            int p = abs(now_time - R);
-            if(p <= eps){
+            if(R == -1){
+                if(tm[i][ptr[i]].first + eps < now_time)
+                ptr[i]++;
+                return;
+            }
+            int p = abs(now_time - R), p1 = now_time - tm[i][ptr[i]].first;
+            if(p <= eps && p1 > eps){
                 if(p <= eps_perfect)
                     Correct_Perfect();
                 else if(p <= eps_good)
                     Correct_Good();
                 else Correct_Normal();
+                ptr[i] ++;
             }
-            else{
+            else if(p1 > eps && p > eps){
+                qDebug()<<"chevoi?";
                 Miss();
+                ptr[i] ++;
             }
         }
     }
@@ -193,6 +204,9 @@ void GameScene::startGame(QString Route) {
     keyFallingTimer = new QTimer(this);
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
+    chkMiss = new QTimer(this);
+    chkMiss -> start(INTERVAL); //每个10ms检查是否有错过的按键
+
     AllTimer = new QTimer(this);
     AllTimer -> start(Total_time);
     qDebug() << "FUUFUFUFUFUFU" << Total_time;
@@ -200,6 +214,7 @@ void GameScene::startGame(QString Route) {
     e_timer.start();
     connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
     connect(AllTimer,&QTimer::timeout,this,&GameScene::endGame);
+    connect(chkMiss,&QTimer::timeout,this,&GameScene::checkMiss);
 }
 
 void GameScene::setBackgroundItem() {
@@ -213,6 +228,7 @@ void GameScene::setBackgroundItem() {
     // osu!mania keys and tracks (set default to 4 tracks)
     // nTracks = 4;
     qDebug() << nTracks << " This is ntrack";
+    qDebug() << "This is track height: " << TRACK_HEIGHT;
 
     // show board and fixed boundary lines
     Board *trackBoard = new Board;
@@ -266,10 +282,10 @@ void GameScene :: timerFallingKey() {
      int nErase = 0;
 
     for(auto p = fallingKeys.begin();p != fallingKeys.end() ; ++p) {
-        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY > TRACK_HEIGHT) break;
+        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY / INTERVAL > TRACK_HEIGHT) break;
             nErase++;
         FallingKey* fk = p.value();
-        if (!fk->isFalling) fk->startFalling();
+            if (!fk->isFalling) fk->startFalling();
         queueFalling.push_back(fk);
         i++;
     }
@@ -282,6 +298,7 @@ void GameScene :: timerFallingKey() {
 void GameScene::handleEndOfFalling()
 {
     qDebug() << "handle end of falling";
+    qDebug() << e_timer.elapsed() - pause_time << " " << e_timer.elapsed() << " " << pause_time;
     queueFalling.pop_front();
 }
 
@@ -305,8 +322,9 @@ void GameScene :: Read_Chart_Data(const QString & Path){
     int Track_num = ReadInt(&file);
     nTracks = Track_num;
     Total_time = ReadInt(&file);
+    memset(pressed_and_long,0,sizeof(pressed_and_long));
 
-    Total_time = 11000; // Just for debugging
+    //Total_time = 11000; // Just for debugging
     //decide KeyVal
     for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
             keyVal[i - st] = key_val_[i];
@@ -463,4 +481,23 @@ void GameScene::endGame(){
     //the necessary ending scene is completed.
     keyFallingTimer -> stop();
     AllTimer -> stop();
+    chkMiss -> stop();
+
+    connect(eScene,&EndingScene::quit_,this,&GameScene::endgame0);
+}
+
+void GameScene::endgame0(){
+    emit end000();
+}
+
+void GameScene::checkMiss(){
+    int now_time = clock() - start_time - pause_time;
+    now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+    for(int i = 0; i < nTracks; i ++){
+//        qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
+        if((now_time - tm[i][ptr[i]].first) > eps && !pressed_and_long[i]){
+            Miss();
+            ptr[i] ++;
+        }
+    }
 }

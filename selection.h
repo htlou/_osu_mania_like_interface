@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QGraphicsItemAnimation>
 #include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 #include "globalvariations.h"
 
 class selection_button{
@@ -27,17 +28,21 @@ public:
     int Num; // music num
     int Nump = 5;
     int central;
-    int Opacity[7] = {0,100,100,100,100,100,0};
+    int Central_py = 700;
+    int Lbound = 220;
+    qreal Opacity[7] = {0,1,1,1,1,1,0};
     QVector<selection_button> vec; // list of choices
     selection_scene();
-    void addItem_(selection_button* button);
+    void addItem_(selection_button* button, qreal op);
     void removeItem_(selection_button* button);
-    int ReadInt(QFile *file);
     void genAnimationUp();
     void genAnimationDown();
     QGraphicsItemAnimation *animation[7];
     QGraphicsItemAnimation *animation0[7];
+    QGraphicsOpacityEffect *opacityEffect[7];
+    QGraphicsOpacityEffect *opacityEffect0[7];
     QTimeLine *timeline[7];
+    QGraphicsPixmapItem *background;
 
     void keyPressEvent(QKeyEvent *event);
 
