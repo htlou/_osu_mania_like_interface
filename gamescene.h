@@ -4,9 +4,10 @@
 #include "fallingkey.h"
 #include "globalvariations.h"
 #include "myMainWindow.h"
-//#include "pause.h"
+#include "stagehint.h"
 #include "pauseWidget.h"
 #include "board.h"
+
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QObject>
@@ -36,6 +37,7 @@ public slots:
     void handleCloseGameAndPauseWindow();
     void GoOnGame();
     void handleEndOfFalling();
+    void hintVanishSlot();
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -44,6 +46,7 @@ protected:
 signals:
     void gamePauseSig();
     void end000();
+    //void hintVanishSig();
 
 private:
     QProcess *myProcess;
@@ -87,10 +90,15 @@ private:
     bool pressed_and_long[11];
     qreal trackWidth, trackInterval, trackHeight, track_x;
     qreal velocity; // falling velocity, per msec
+
+    // timers
     QTimer *keyFallingTimer;
     QTimer *AllTimer;
     QElapsedTimer e_timer;
     QTimer *chkMiss;
+    QTimer *hintVanishTimer;
+
+    // item containers
     QVector<QGraphicsRectItem*> keyItems;   // deprecate in future versions
     int keyVal[6] {Qt::Key_S, Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J, Qt::Key_K};
     QVector<QPair<int, int> > tm[11];
@@ -102,6 +110,7 @@ private:
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
 
     QGraphicsSimpleTextItem* Time = new QGraphicsSimpleTextItem("0000000");//see the time.only to debugging
+    stageHint *hint;
 
     double start_time = 0; // timer
     QString Path; // Music Data Path

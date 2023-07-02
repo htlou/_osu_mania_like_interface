@@ -20,7 +20,6 @@ GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
-    start_time = clock();
     Path = ":/data/data";
     DefaultPath = ":/resources";
 
@@ -54,6 +53,7 @@ GameScene::GameScene(QString Route, QObject *parent)
     // start the game
     status = 1;
     startGame(Route);
+    start_time = clock();
 }
 
 QString Int2String(int num, int x){ // num位数，x数字，取x后num位转换为QString，不足补0
@@ -77,6 +77,18 @@ void GameScene::Correct_Perfect(){
     score += ((combo < 10) ? combo : 10) * 1000;
     Change_Number();
     qDebug() << "Perfect!\n";
+    // show hint
+    if (hint) {
+        qDebug() << "delete!";
+        delete hint;
+        delete hintVanishTimer;
+    }
+    hint = new stageHint("hint-perfect");
+    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
+    addItem(hint);
+    hintVanishTimer = new QTimer();
+    hintVanishTimer->start(500);
+    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
 }
 
 void GameScene::Correct_Good(){
@@ -84,6 +96,18 @@ void GameScene::Correct_Good(){
     score += ((combo < 10) ? combo : 10) * 800;
     Change_Number();
     qDebug() << "Good!\n";
+    // show hint
+    if (hint) {
+        qDebug() << "delete!";
+        delete hint;
+        delete hintVanishTimer;
+    }
+    hint = new stageHint("hint-good");
+    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
+    addItem(hint);
+    hintVanishTimer = new QTimer();
+    hintVanishTimer->start(500);
+    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
 }
 
 void GameScene::Correct_Normal(){
@@ -91,6 +115,18 @@ void GameScene::Correct_Normal(){
     score += ((combo < 10) ? combo : 10) * 500;
     Change_Number();
     qDebug() << "Normal!\n";
+    // show hint
+    if (hint) {
+        qDebug() << "delete!";
+        delete hint;
+        delete hintVanishTimer;
+    }
+    hint = new stageHint("hint-normal");
+    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
+    addItem(hint);
+    hintVanishTimer = new QTimer();
+    hintVanishTimer->start(500);
+    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
 }
 
 void GameScene::Miss(){
@@ -98,6 +134,25 @@ void GameScene::Miss(){
     combo = 0;
     Change_Number();
     qDebug() << "Miss!\n";
+    // show hint
+    if (hint) {
+        qDebug() << "delete!";
+        delete hint;
+        delete hintVanishTimer;
+    }
+    hint = new stageHint("hint-miss");
+    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
+    addItem(hint);
+    hintVanishTimer = new QTimer();
+    hintVanishTimer->start(500);
+    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+}
+
+void GameScene::hintVanishSlot()
+{
+    hint->vanish();
+    hint = nullptr;
+    delete hintVanishTimer;
 }
 
 void GameScene::keyPressEvent(QKeyEvent* event) {
@@ -205,7 +260,7 @@ void GameScene::startGame(QString Route) {
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
     chkMiss = new QTimer(this);
-    chkMiss -> start(INTERVAL); //每个10ms检查是否有错过的按键
+    chkMiss -> start(1); //每个10ms检查是否有错过的按键
 
     AllTimer = new QTimer(this);
     AllTimer -> start(Total_time);
@@ -245,9 +300,14 @@ void GameScene::setBackgroundItem() {
     Score_ -> setPos(SCREEN_WIDTH-300,100);
     Score_ -> setBrush(Qt::white);
     Score_ -> setFont(font);
-    Combo_ -> setPos(SCREEN_WIDTH-300,150);
+    Combo_ -> setPos(SCREEN_WIDTH/2 - Combo_->boundingRect().width()/2,SCREEN_HEIGHT*0.01);
     Combo_ -> setBrush(Qt::white);
     Combo_ -> setFont(font);
+    stageHint* combo_icon = new stageHint("combo");
+    combo_icon->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.10);
+    combo_icon->setScale(0.5);
+
+    addItem(combo_icon);
     Time -> setPos(SCREEN_WIDTH-300,200);
     Time -> setBrush(Qt::white);
     Time -> setFont(font);
@@ -473,6 +533,7 @@ void GameScene::endGame(){
     eview->setFixedSize(eScene->sceneRect().size().toSize());
     //eview->showFullScreen();
     // remove game view
+    player->stop();
     QWidget *w = _parent->layout->currentWidget();
     _parent->layout->removeWidget(w);
     w->deleteLater();

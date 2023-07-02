@@ -9,6 +9,7 @@ MenuButton::MenuButton(const QString &name)
     QPixmap start(":/element/resources/"+name+".png");
     setPixmap(start);
     setOffset(-start.width()/2, -start.height()/2);
+
     setAcceptHoverEvents(true);
     setShapeMode(QGraphicsPixmapItem::BoundingRectShape); //设置按钮的响应范围为边界矩形的范围
 

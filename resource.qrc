@@ -38,6 +38,11 @@
         <file>resources/menu-play.png</file>
         <file>resources/key-setting.png</file>
         <file>resources/menu-quit.png</file>
+        <file>resources/hint-good.png</file>
+        <file>resources/hint-miss.png</file>
+        <file>resources/hint-normal.png</file>
+        <file>resources/hint-perfect.png</file>
+        <file>resources/combo.png</file>
     </qresource>
     <qresource prefix="/">
         <file>data/tree.txt</file>
