@@ -238,20 +238,20 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
     }
     if(event -> key() == Qt::Key_W){
         if(central > 0){
-        genAnimationUp();
-        central --;
-        UpdateInfo();
-        for(int i = 0;i < Num; i ++){
-            vec[i].posy = (i - central) * 100 + Central_py;
-            if(abs(i - central) <= 2){
-                vec[i].rect ->setOpacity(1.0);
-                vec[i].txt->setOpacity(1.0);
+            genAnimationUp();
+            central --;
+            UpdateInfo();
+            for(int i = 0;i < Num; i ++){
+                vec[i].posy = (i - central) * 100 + Central_py;
+                if(abs(i - central) <= 2){
+                    vec[i].rect ->setOpacity(1.0);
+                    vec[i].txt->setOpacity(1.0);
+                }
+                else if(abs(i - central) >= 4){
+                    vec[i].rect->setOpacity(0);
+                    vec[i].txt->setOpacity(0);
+                }
             }
-            else if(abs(i - central) >= 4){
-                vec[i].rect->setOpacity(0);
-                vec[i].txt->setOpacity(0);
-            }
-        }
         }
     }
     else if(event -> key() == Qt::Key_S){
@@ -274,7 +274,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
     }
     else if(event -> key() == Qt::Key_Space){
         SelectedPath = vec[central].Path;
-        qDebug() << "now Entered" << " " << SelectedPath;
+//        qDebug() << "now Entered" << " " << SelectedPath;
         emit selected();
     }
     else if(event -> key() == Qt::Key_Escape){

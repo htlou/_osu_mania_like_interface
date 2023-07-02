@@ -3,6 +3,17 @@
 #include <QResizeEvent>
 #include <QGraphicsPixmapItem>
 
+template<class T>
+void GenOpacityAnimation_(T* w){
+    QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect;
+    w->setGraphicsEffect(opacityEffect);
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0.0);
+    opacityAnimation->setKeyValueAt(1.0,1.0);
+    opacityAnimation->start();
+}
+
 keysets::keysets(const QString &str1, const QString& str2, int px, int py, QFont font__){
     button = new settings_button(str1,200,50,nullptr);
     button -> can_selected = 1;

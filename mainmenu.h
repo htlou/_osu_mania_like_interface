@@ -68,6 +68,7 @@ public:
     MenuButton *quit;
     QGraphicsRectItem *menubar;
     void GenAnimation();
+    void GenAnimation2();
 
     explicit MainMenu(QObject *parent = nullptr);
 

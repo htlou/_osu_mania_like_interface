@@ -482,7 +482,7 @@ void GameScene :: Read_Img_Data(const QString & Path){
 void GameScene::Read_BGM_Data(const QString & Path){
     player->setAudioOutput(audioOutput);
     player->setSource(QUrl("qrc"+Path));
-    audioOutput->setVolume(50);
+    audioOutput->setVolume(music_vol);
     player->play();
     if(player->isPlaying())qDebug()<<"playing bgm";
 }
