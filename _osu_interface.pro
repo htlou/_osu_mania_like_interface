@@ -22,7 +22,8 @@ SOURCES += \
     pause.cpp \
     pauseWidget.cpp \
     selection.cpp \
-    settings.cpp
+    settings.cpp \
+    stagehint.cpp
 
 HEADERS += \
     board.h \
@@ -36,7 +37,8 @@ HEADERS += \
     pause.h \
     pauseWidget.h \
     selection.h \
-    settings.h
+    settings.h \
+    stagehint.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

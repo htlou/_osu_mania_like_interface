@@ -33,7 +33,7 @@ FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScen
 //    m_boundaryPath = path;
 //    update();
 
-    //setOpacity(0);
+    setOpacity(0.8);
     isFalling = false;
     isEndFalling = false;
 }
