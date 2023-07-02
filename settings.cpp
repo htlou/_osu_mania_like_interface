@@ -138,7 +138,7 @@ void settings_scene::senderrormsg(int Pos){
     Font.setPointSize(15);
     errormsg -> setBrush(Qt::red);
     errormsg -> setFont(Font);
-    errormsg -> setPos(150, 75 + 100 + Pos * 150);
+    errormsg -> setPos(150, 75 + 160 + Pos * 150);
 
     addItem(errormsg);
     QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
@@ -188,13 +188,20 @@ settings_scene::settings_scene(QObject *parent): QGraphicsScene(parent){
     AddVolumeBar(VBar);
 
     QFont font__ = DefaultFont;
+    font__.setPointSize(48);
+    headline = new QGraphicsSimpleTextItem(QString("SETTINGS"));
+    headline -> setFont(font__);
+    headline -> setPos(SCREEN_WIDTH/2 - 225, SCREEN_HEIGHT / 30);
+    headline -> setBrush(Qt::white);
+    addItem(headline);
+
     font__.setPointSize(28);
 
     nowchange = -1;
-    L1 = new keysets("Left Key 1","Key_"+QString((char)(key_val_[0]-65+'A')),100,100,font__);
-    L2 = new keysets("Left Key 2","Key_"+QString((char)(key_val_[1]-65+'A')),100,250,font__);
-    L3 = new keysets("Right Key 1","Key_"+QString((char)(key_val_[2]-65+'A')),100,400,font__);
-    R1 = new keysets("Right Key 2","Key_"+QString((char)(key_val_[3]-65+'A')),100,550,font__);
+    L1 = new keysets("Left Key 1","Key_"+QString((char)(key_val_[0]-65+'A')),100,160,font__);
+    L2 = new keysets("Left Key 2","Key_"+QString((char)(key_val_[1]-65+'A')),100,310,font__);
+    L3 = new keysets("Right Key 1","Key_"+QString((char)(key_val_[2]-65+'A')),100,460,font__);
+    R1 = new keysets("Right Key 2","Key_"+QString((char)(key_val_[3]-65+'A')),100,610,font__);
 
     addkeysets(L1),addkeysets(L2),addkeysets(L3),addkeysets(R1);
 
@@ -245,16 +252,16 @@ QString Int2String2(int x){
 VolumeBar::VolumeBar(){
     D1 = new settings_button("-",50,50,nullptr);
     A1 = new settings_button("+",50,50,nullptr);
-    D1 -> setPos(100,820);
-    A1 -> setPos(600,820);
+    D1 -> setPos(100,880);
+    A1 -> setPos(600,880);
     Vol = new QGraphicsSimpleTextItem(Int2String2(music_vol/5));
     Instruction = new QGraphicsSimpleTextItem("Music Volume");
     QFont Font = DefaultFont; Font.setPointSize(44);
     Vol -> setFont(Font);
-    Vol -> setPos(340,800);
-    Font.setPointSize(20);
+    Vol -> setPos(340,860);
+    Font.setPointSize(34);
     Instruction -> setFont(Font);
-    Instruction -> setPos(100, 740);
+    Instruction -> setPos(100, 800);
 
     connect(D1,&settings_button::button_pressed,this,&VolumeBar::Dec1);
     connect(A1,&settings_button::button_pressed,this,&VolumeBar::Add1);
@@ -264,16 +271,16 @@ void VolumeBar::Dec1(){
     if(music_vol == 0)return;
     music_vol -= 5;
     Vol -> setText(Int2String2(music_vol/5));
-    if(music_vol <= 45) Vol -> setPos(360,800);
-    else Vol -> setPos(340, 800);
+    if(music_vol <= 45) Vol -> setPos(360,860);
+    else Vol -> setPos(340, 860);
 }
 
 void VolumeBar::Add1(){
     if(music_vol == 100) return;
     music_vol += 5;
     Vol -> setText(Int2String2(music_vol/5));
-    if(music_vol <= 45) Vol -> setPos(360,800);
-    else Vol -> setPos(340, 800);
+    if(music_vol <= 45) Vol -> setPos(360,860);
+    else Vol -> setPos(340, 860);
 }
 
 

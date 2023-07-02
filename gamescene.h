@@ -21,6 +21,7 @@
 #include <QLCDNumber>
 #include <QLabel>
 #include <QProcess>
+#include <QSignalMapper>
 
 class GameScene : public QGraphicsScene
 {
@@ -37,7 +38,7 @@ public slots:
     void handleCloseGameAndPauseWindow();
     void GoOnGame();
     void handleEndOfFalling();
-    void hintVanishSlot();
+    void hintVanishSlot(int pos);
 
 protected:
     void keyPressEvent(QKeyEvent* event);
@@ -65,10 +66,10 @@ private:
     // end of the game
     void endInterface(); // wait for further implementation ...
 
-    void Correct_Perfect();
-    void Correct_Good();
-    void Correct_Normal();
-    void Miss();
+    void Correct_Perfect(int pos);
+    void Correct_Good(int pos);
+    void Correct_Normal(int pos);
+    void Miss(int pos);
     void Show_combo();
     void Show_score();
     void Change_Number();
@@ -90,6 +91,7 @@ private:
     bool is_paused = 0;
     qreal trackWidth, trackInterval, trackHeight, track_x;
     qreal velocity; // falling velocity, per msec
+    QSignalMapper *mapper;
 
     // timers
     QTimer *keyFallingTimer;
@@ -110,7 +112,7 @@ private:
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
 
     QGraphicsSimpleTextItem* Time = new QGraphicsSimpleTextItem("0000000");//see the time.only to debugging
-    stageHint *hint;
+    stageHint *hint[4] = {nullptr,nullptr,nullptr,nullptr};
 
     double start_time = 0; // timer
     QString Path; // Music Data Path

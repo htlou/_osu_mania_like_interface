@@ -72,86 +72,123 @@ void GameScene::Change_Number(){
     Time -> setText(Int2String(7,e_timer.elapsed()));
 }
 
-void GameScene::Correct_Perfect(){
+void GameScene::Correct_Perfect(int pos){
     combo ++;
     score += ((combo < 10) ? combo : 10) * 1000;
     Change_Number();
     qDebug() << "Perfect!\n";
+    //qDebug() << hint;
     // show hint
-    if (hint) {
+    if (hint[pos]) {
         qDebug() << "delete!";
-        delete hint;
+        delete hint[pos];
         delete hintVanishTimer;
     }
-    hint = new stageHint("hint-perfect");
-    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
-    addItem(hint);
+    hint[pos] = new stageHint("hint-perfect");
+    hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
+    addItem(hint[pos]);
     hintVanishTimer = new QTimer();
     hintVanishTimer->start(500);
-    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    //connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0);
+    opacityAnimation->setKeyValueAt(0.001,1);
+    opacityAnimation->setKeyValueAt(0.999,1);
+    opacityAnimation->setKeyValueAt(1.0,0);
+    hint[pos] -> setGraphicsEffect(opacityEffect);
+    opacityAnimation -> start();
 }
 
-void GameScene::Correct_Good(){
+void GameScene::Correct_Good(int pos){
     combo ++;
     score += ((combo < 10) ? combo : 10) * 800;
     Change_Number();
     qDebug() << "Good!\n";
     // show hint
-    if (hint) {
+    if (hint[pos]) {
         qDebug() << "delete!";
-        delete hint;
+        delete hint[pos];
         delete hintVanishTimer;
     }
-    hint = new stageHint("hint-good");
-    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
-    addItem(hint);
+    hint[pos] = new stageHint("hint-good");
+    hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
+    addItem(hint[pos]);
     hintVanishTimer = new QTimer();
     hintVanishTimer->start(500);
-    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    //connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0);
+    opacityAnimation->setKeyValueAt(0.001,1);
+    opacityAnimation->setKeyValueAt(0.999,1);
+    opacityAnimation->setKeyValueAt(1.0,0);
+    hint[pos] -> setGraphicsEffect(opacityEffect);
+    opacityAnimation -> start();
 }
 
-void GameScene::Correct_Normal(){
+void GameScene::Correct_Normal(int pos){
     combo ++;
     score += ((combo < 10) ? combo : 10) * 500;
     Change_Number();
     qDebug() << "Normal!\n";
     // show hint
-    if (hint) {
+    if (hint[pos]) {
         qDebug() << "delete!";
-        delete hint;
+        delete hint[pos];
         delete hintVanishTimer;
     }
-    hint = new stageHint("hint-normal");
-    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
-    addItem(hint);
+    hint[pos] = new stageHint("hint-normal");
+    hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
+    addItem(hint[pos]);
     hintVanishTimer = new QTimer();
     hintVanishTimer->start(500);
-    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    //connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0);
+    opacityAnimation->setKeyValueAt(0.001,1);
+    opacityAnimation->setKeyValueAt(0.999,1);
+    opacityAnimation->setKeyValueAt(1.0,0);
+    hint[pos] -> setGraphicsEffect(opacityEffect);
+    opacityAnimation -> start();
 }
 
-void GameScene::Miss(){
+void GameScene::Miss(int pos){
     score ++;
     combo = 0;
     Change_Number();
     qDebug() << "Miss!\n";
     // show hint
-    if (hint) {
+    if (hint[pos]) {
         qDebug() << "delete!";
-        delete hint;
+        delete hint[pos];
         delete hintVanishTimer;
     }
-    hint = new stageHint("hint-miss");
-    hint->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.7);
-    addItem(hint);
+    hint[pos] = new stageHint("hint-miss");
+    hint[pos]->setPos(TRACK_WIDTH*(pos-2 + 0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
+    addItem(hint[pos]);
     hintVanishTimer = new QTimer();
     hintVanishTimer->start(500);
-    connect(hintVanishTimer, &QTimer::timeout, this, &GameScene::hintVanishSlot);
+    //connect(hintVanishTimer, &QTimer::timeout, this, SLOT(hintVanishSlot(pos)));
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0);
+    opacityAnimation->setKeyValueAt(0.001,1);
+    opacityAnimation->setKeyValueAt(0.999,1);
+    opacityAnimation->setKeyValueAt(1.0,0);
+    hint[pos] -> setGraphicsEffect(opacityEffect);
+    opacityAnimation -> start();
 }
 
-void GameScene::hintVanishSlot()
+void GameScene::hintVanishSlot(int pos)
 {
-    hint->vanish();
-    hint = nullptr;
+    hint[pos]->vanish();
+    hint[pos] = nullptr;
     delete hintVanishTimer;
 }
 
@@ -187,9 +224,9 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 int p = abs(now_time - tm[i][ptr[i]].first);
                 if(p <= eps){
                     if(tm[i][ptr[i]].second == -1){
-                        if(p <= eps_perfect)Correct_Perfect();
-                        else if(p <= eps_good)Correct_Good();
-                        else Correct_Normal();
+                        if(p <= eps_perfect)Correct_Perfect(i);
+                        else if(p <= eps_good)Correct_Good(i);
+                        else Correct_Normal(i);
                         ptr[i]++;
 
                     }
@@ -200,7 +237,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 }
                 else{
                     if(now_time > tm[i][ptr[i]].first + eps)tm[i][ptr[i]].second = -1;
-                    Miss();
+                    Miss(i);
                 }
             }
         }
@@ -229,15 +266,15 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
             int p = abs(now_time - R), p1 = now_time - tm[i][ptr[i]].first;
             if(p <= eps && p1 > eps){
                 if(p <= eps_perfect)
-                    Correct_Perfect();
+                    Correct_Perfect(i);
                 else if(p <= eps_good)
-                    Correct_Good();
-                else Correct_Normal();
+                    Correct_Good(i);
+                else Correct_Normal(i);
                 ptr[i] ++;
             }
             else if(p1 > eps && p > eps){
                 qDebug()<<"chevoi?";
-                Miss();
+                Miss(i);
                 ptr[i] ++;
             }
         }
@@ -563,7 +600,7 @@ void GameScene::checkMiss(){
     for(int i = 0; i < nTracks; i ++){
         qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
         if((now_time - tm[i][ptr[i]].first) > eps && !pressed_and_long[i]){
-            Miss();
+            Miss(i);
             ptr[i] ++;
         }
     }

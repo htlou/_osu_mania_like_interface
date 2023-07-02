@@ -89,6 +89,7 @@ public:
     int nowchange;
 
     QGraphicsPixmapItem *background;
+    QGraphicsSimpleTextItem *headline;
     void pl1();
     void pl2();
     void pl3();
