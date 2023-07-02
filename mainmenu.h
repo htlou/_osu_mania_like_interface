@@ -58,13 +58,16 @@ public slots:
         qDebug()<<"setting sent...";
         emit enter_settings_sig();
     }
-    void quit_game_slot(){
-        qDebug()<<"quit sent...";
-        emit quit_game_sig();
-    }
+    void quit_game_slot();
 
 public:
     QGraphicsPixmapItem *background;
+    QGraphicsPixmapItem *logo;
+    MenuButton *start;
+    MenuButton *setting;
+    MenuButton *quit;
+    QGraphicsRectItem *menubar;
+    void GenAnimation();
 
     explicit MainMenu(QObject *parent = nullptr);
 

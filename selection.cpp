@@ -34,6 +34,17 @@ void selection_scene::removeItem_(selection_button* button){
     removeItem(button -> txt);
 }
 
+template<class T>
+void GenOpacityAnimation(T* w){
+    QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect;
+    w->setGraphicsEffect(opacityEffect);
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(500);
+    opacityAnimation->setKeyValueAt(0.0,0.0);
+    opacityAnimation->setKeyValueAt(1.0,1.0);
+    opacityAnimation->start();
+}
+
 selection_scene::selection_scene(MyMainWindow *_parent)
     : parent(_parent)
 {
@@ -66,6 +77,10 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     vec[0].orig = 1.40;
     for(int i = 0; i < Num; i ++) addItem_(&vec[i], i <= 3 ? Opacity[i + 3] : 0);
 
+    for(int i = 0; i <= 2; i ++){
+        GenOpacityAnimation(vec[i].rect);
+        GenOpacityAnimation(vec[i].txt);
+    }
 
     QFont font = DefaultFont;
     font.setPointSize(28);
@@ -99,8 +114,16 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     addItem(Instruction1);
     addItem(Instruction2);
 
-    UpdateInfo();
+    GenOpacityAnimation(MusWriter);
+    GenOpacityAnimation(Length);
+    GenOpacityAnimation(Difficulty);
+    GenOpacityAnimation(Instruction1);
+    GenOpacityAnimation(Instruction2);
 
+    timer = new QElapsedTimer;
+    timer -> start();
+
+    UpdateInfo();
 
     // draw back-to-menu button
     MenuButton* backBtn = new MenuButton("back-icon");
@@ -111,7 +134,6 @@ selection_scene::selection_scene(MyMainWindow *_parent)
 
 //    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
 //    SelectRect -> setPos(Lbound-10,Central_py-3);
-
 //    addItem(SelectRect);
 }
 
@@ -208,6 +230,9 @@ void selection_scene::genAnimationDown(){
 }
 
 void selection_scene::keyPressEvent(QKeyEvent* event){
+    if(timer->elapsed() / (CLOCKS_PER_SEC / 1000) <= 500){
+        return;
+    }
     if (event->isAutoRepeat()) {
         return;
     }

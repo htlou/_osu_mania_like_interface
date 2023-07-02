@@ -54,6 +54,7 @@ public:
     QGraphicsSimpleTextItem *Instruction2;
     QTimeLine *timeline[7];
     QGraphicsPixmapItem *background;
+    QElapsedTimer *timer;
 
     void keyPressEvent(QKeyEvent *event);
     void UpdateInfo();

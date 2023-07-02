@@ -26,10 +26,10 @@ GameScene::GameScene(QString Route, QObject *parent)
 
     setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     s_width = sceneRect().size().toSize().width(); s_height = sceneRect().size().toSize().height();
-    trackHeight = s_height * 6 / 8;
-    QGraphicsRectItem* background = new QGraphicsRectItem(sceneRect());
-    background->setBrush(Qt::black);
-    this->addItem(background);
+    trackHeight = SCREEN_HEIGHT * 6 / 8;
+    //QGraphicsRectItem* background = new QGraphicsRectItem(sceneRect());
+    //background->setBrush(Qt::black);
+    //this->addItem(background);
 
     // set track size
     TRACK_WIDTH = SCREEN_WIDTH / 8;
