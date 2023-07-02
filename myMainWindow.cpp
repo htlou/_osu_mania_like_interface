@@ -56,7 +56,8 @@ QGraphicsView* MyMainWindow::initGame()
 void MyMainWindow::enter_select_0()
 {
     qDebug()<<"select ongoing...";
-    selection_scene *scene__ = new selection_scene();
+    selection_scene *scene__ = new selection_scene(this);
+    connect(scene__, &selection_scene::backSig, this, &MyMainWindow::backMenuSlot);
 
     QGraphicsView* s_view = new QGraphicsView(scene__, this);
     s_view->setRenderHint(QPainter::Antialiasing);
@@ -157,6 +158,14 @@ void MyMainWindow::close_from_pause()
 void MyMainWindow::close_from_game(){
     QWidget* w = layout->currentWidget();
     layout->removeWidget(w);
+    layout->addWidget(initStartMenu());
+    layout->currentWidget()->setFocus();
+}
+
+void MyMainWindow::backMenuSlot() {
+    QWidget* w = layout->currentWidget();
+    layout->removeWidget(w);
+    w->deleteLater();
     layout->addWidget(initStartMenu());
     layout->currentWidget()->setFocus();
 }

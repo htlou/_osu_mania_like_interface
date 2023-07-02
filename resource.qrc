@@ -44,6 +44,7 @@
         <file>resources/hint-perfect.png</file>
         <file>resources/combo.png</file>
         <file>resources/pause-button.png</file>
+        <file>resources/back-icon.png</file>
     </qresource>
     <qresource prefix="/">
         <file>data/tree.txt</file>

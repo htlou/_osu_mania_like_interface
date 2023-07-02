@@ -7,6 +7,7 @@
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 #include "globalvariations.h"
+#include "myMainWindow.h"
 
 class selection_button{
 public:
@@ -24,6 +25,7 @@ class selection_scene : public QGraphicsScene{
 Q_OBJECT
 signals:
     void selected();
+    void backSig();
 
 public:
     int Num; // music num
@@ -36,7 +38,7 @@ public:
     qreal Scale[7] = {1,1,1,1.40,1,1,1};
     int Modifier[7] = {0,0,0,-14,0,0,0};
     QVector<selection_button> vec; // list of choices
-    selection_scene();
+    selection_scene(MyMainWindow *_parent);
     void addItem_(selection_button* button, qreal op);
     void removeItem_(selection_button* button);
     void genAnimationUp();
@@ -50,6 +52,11 @@ public:
 
     void keyPressEvent(QKeyEvent *event);
 
+public slots:
+    void backSlot();
+
+private:
+    MyMainWindow *parent;
 };
 
 #endif // SELECTION_H

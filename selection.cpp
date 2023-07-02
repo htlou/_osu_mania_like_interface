@@ -1,4 +1,5 @@
 #include "selection.h"
+#include "menubutton.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QTimeLine>
@@ -33,7 +34,9 @@ void selection_scene::removeItem_(selection_button* button){
     removeItem(button -> txt);
 }
 
-selection_scene::selection_scene(){
+selection_scene::selection_scene(MyMainWindow *_parent)
+    : parent(_parent)
+{
     QFile file(":/data/tree.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
     QTextStream stream(&file);
@@ -43,10 +46,11 @@ selection_scene::selection_scene(){
     Lbound = 220;
     Central_py = (SCREEN_HEIGHT - 40) / 2;
 
-    QPixmap bgPic(QPixmap(":/img/resources/fail-background.png"));
-    bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    QPixmap bgPic(QPixmap(":/img/resources/background-1.png"));
+    bgPic = bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
-    background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
+    background->setPos(0, 0);
+    //background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
     addItem(background);
 
     Num = stream.readLine().toInt();
@@ -61,6 +65,13 @@ selection_scene::selection_scene(){
     vec[0].txt -> setScale(Scale[3]);
     vec[0].orig = 1.40;
     for(int i = 0; i < Num; i ++) addItem_(&vec[i], i <= 3 ? Opacity[i + 3] : 0);
+
+    // draw back-to-menu button
+    MenuButton* backBtn = new MenuButton("back-icon");
+    backBtn->setPos(20, 20);
+    backBtn->setScale(0.25);
+    addItem(backBtn);
+    connect(backBtn, &MenuButton::clicked, this, &selection_scene::backSlot);
 
 //    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
 //    SelectRect -> setPos(Lbound-10,Central_py-3);
@@ -205,3 +216,8 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
     }
 }
 
+
+void selection_scene::backSlot()
+{
+    emit backSig();
+}
