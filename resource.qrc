@@ -43,6 +43,7 @@
         <file>resources/hint-normal.png</file>
         <file>resources/hint-perfect.png</file>
         <file>resources/combo.png</file>
+        <file>resources/pause-button.png</file>
     </qresource>
     <qresource prefix="/">
         <file>data/tree.txt</file>
@@ -51,5 +52,6 @@
         <file>Saria_Default.ttf</file>
         <file>Saria_Italic.ttf</file>
         <file>font/Saira/static/Saira_Expanded-SemiBold.ttf</file>
+        <file>font/Saira/static/Saira_Expanded-Light.ttf</file>
     </qresource>
 </RCC>

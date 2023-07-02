@@ -38,6 +38,7 @@ public slots:
     void GoOnGame();
     void handleEndOfFalling();
     void hintVanishSlot();
+    void pauseSlot();
 
 protected:
     void keyPressEvent(QKeyEvent* event);

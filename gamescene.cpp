@@ -15,6 +15,7 @@
 //#include "pause.h"
 #include "pauseWidget.h"
 #include "ending.h"
+#include "menubutton.h"
 
 GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
@@ -275,10 +276,11 @@ void GameScene::startGame(QString Route) {
 
 void GameScene::setBackgroundItem() {
     // show background picture
-    QPixmap bgPic(QPixmap(":/img/resources/fail-background.png"));
+    QPixmap bgPic(QPixmap(":/img/resources/background-1.png"));
     bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
-    background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
+    background->setPos(0, 0);
+    //background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
     addItem(background);
 
     // osu!mania keys and tracks (set default to 4 tracks)
@@ -295,26 +297,36 @@ void GameScene::setBackgroundItem() {
         detectLines.append(dl);
         addItem(dl);
     }
+    // draw score board
+    QGraphicsRectItem *scoreBoard = new QGraphicsRectItem((SCREEN_WIDTH+TRACK_WIDTH*4)/2,0,(SCREEN_WIDTH-TRACK_WIDTH*4)/2,200);
+    scoreBoard->setBrush(Qt::black);
+    scoreBoard->setOpacity(0.5);
+    addItem(scoreBoard);
 
     QFont font(DefaultFont); // 初始化得分与Combo
-    Score_ -> setPos(SCREEN_WIDTH-300,100);
+    Score_ -> setPos(SCREEN_WIDTH-300,25);
     Score_ -> setBrush(Qt::white);
     Score_ -> setFont(font);
-    Combo_ -> setPos(SCREEN_WIDTH/2 - Combo_->boundingRect().width()/2,SCREEN_HEIGHT*0.01);
+    Combo_ -> setPos(SCREEN_WIDTH-300,75);
     Combo_ -> setBrush(Qt::white);
     Combo_ -> setFont(font);
-    stageHint* combo_icon = new stageHint("combo");
-    combo_icon->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.10);
-    combo_icon->setScale(0.5);
-
-    addItem(combo_icon);
-    Time -> setPos(SCREEN_WIDTH-300,200);
+//    stageHint* combo_icon = new stageHint("combo");
+//    combo_icon->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.10);
+//    combo_icon->setScale(0.3);
+//    addItem(combo_icon);
+    Time -> setPos(SCREEN_WIDTH-300,125);
     Time -> setBrush(Qt::white);
     Time -> setFont(font);
 
     this -> addItem(Score_);
     this -> addItem(Combo_);
     this -> addItem(Time);
+    // draw pause button
+    MenuButton* pauseBtn = new MenuButton("pause-button");
+    pauseBtn->setPos(20, 20);
+    pauseBtn->setScale(0.25);
+    addItem(pauseBtn);
+    connect(pauseBtn, &MenuButton::clicked, this, &GameScene::pauseSlot);
 
 }
 
@@ -562,4 +574,9 @@ void GameScene::checkMiss(){
             ptr[i] ++;
         }
     }
+}
+
+void GameScene::pauseSlot()
+{
+    pauseGame();
 }
