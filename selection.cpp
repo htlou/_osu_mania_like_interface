@@ -4,9 +4,16 @@
 #include <QTimeLine>
 
 selection_button::selection_button(QString txt_, QString pth, int Y){
-    m_text = txt_; Path = pth; posy = Y;
-    rect = new QGraphicsRectItem(0,0,300,40);
+    m_text = txt_; Path = pth; posy = Y; orig = 1;
+    rect = new QGraphicsRectItem(0,0,340,70);
+    QColor bgCol = QColor(0, 0, 0, 50);
+    QFont font = DefaultFont;
+    font.setPointSize(25);
+    rect -> setPen(QPen(bgCol,0));
+    rect -> setBrush(bgCol);
     txt = new QGraphicsSimpleTextItem(m_text);
+    txt -> setBrush(Qt::white);
+    txt -> setFont(font);
 }
 
 void selection_scene::addItem_(selection_button* button, qreal op){
@@ -47,15 +54,18 @@ selection_scene::selection_scene(){
         QString line1 = stream.readLine();
         QString line2 = stream.readLine();
         qDebug() << line1 << "\n" << line2 << "\n";
-        vec.push_back(selection_button(line1,line2,(i - central) * 100 + Central_py));
+        vec.push_back(selection_button(line1,line2,(i - central) * 100 + Central_py + (i == 0) * (-14)));
     }
     }
+    vec[0].rect -> setScale(Scale[3]);
+    vec[0].txt -> setScale(Scale[3]);
+    vec[0].orig = 1.40;
     for(int i = 0; i < Num; i ++) addItem_(&vec[i], i <= 3 ? Opacity[i + 3] : 0);
 
-    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
-    SelectRect -> setPos(Lbound-10,Central_py-3);
+//    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
+//    SelectRect -> setPos(Lbound-10,Central_py-3);
 
-    addItem(SelectRect);
+//    addItem(SelectRect);
 }
 
 void selection_scene::genAnimationUp(){
@@ -65,33 +75,40 @@ void selection_scene::genAnimationUp(){
         animation[id] -> setItem(vec[i].rect);
         animation0[id] = new QGraphicsItemAnimation;
         animation0[id] -> setItem(vec[i].txt);
-        opacityEffect[id] = new QGraphicsOpacityEffect;
-        opacityEffect0[id] = new QGraphicsOpacityEffect;
-        vec[i].rect->setGraphicsEffect(opacityEffect[id]);
-        vec[i].txt->setGraphicsEffect(opacityEffect0[id]);
+        if(id == 5 || id == 0){
+            opacityEffect[id] = new QGraphicsOpacityEffect;
+            opacityEffect0[id] = new QGraphicsOpacityEffect;
+            vec[i].rect->setGraphicsEffect(opacityEffect[id]);
+            vec[i].txt->setGraphicsEffect(opacityEffect0[id]);
 
-        QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect[id], "opacity");
-        opacityAnimation->setDuration(400);
-        opacityAnimation->setKeyValueAt(0.0,Opacity[id]);
-        opacityAnimation->setKeyValueAt(1.0,Opacity[id + 1]);
+            QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect[id], "opacity");
+            opacityAnimation->setDuration(400);
+            opacityAnimation->setKeyValueAt(0.0,Opacity[id]);
+            opacityAnimation->setKeyValueAt(1.0,Opacity[id + 1]);
 
-        QPropertyAnimation *opacityAnimation0 = new QPropertyAnimation(opacityEffect0[id], "opacity");
-        opacityAnimation0->setDuration(400);
-        opacityAnimation0->setKeyValueAt(0.0,Opacity[id]);
-        opacityAnimation0->setKeyValueAt(1.0,Opacity[id + 1]);
+            QPropertyAnimation *opacityAnimation0 = new QPropertyAnimation(opacityEffect0[id], "opacity");
+            opacityAnimation0->setDuration(400);
+            opacityAnimation0->setKeyValueAt(0.0,Opacity[id]);
+            opacityAnimation0->setKeyValueAt(1.0,Opacity[id + 1]);
 
-        opacityAnimation -> start();
-        opacityAnimation0 -> start();
+            opacityAnimation -> start();
+            opacityAnimation0 -> start();
+        }
 
         timeline[id] = new QTimeLine(400);
         timeline[id] -> setLoopCount(1);
         animation[id] -> setTimeLine(timeline[id]);
         animation0[id] -> setTimeLine(timeline[id]);
 
-        animation[id]-> setPosAt(0,QPointF(Lbound,(id-3)*100+Central_py));
-        animation[id]-> setPosAt(1,QPointF(Lbound,(id-2)*100+Central_py));
-        animation0[id]-> setPosAt(0,QPointF(Lbound + 10,(id-3)*100+10+Central_py));
-        animation0[id]-> setPosAt(1,QPointF(Lbound + 10,(id-2)*100+10+Central_py));
+        animation[id]-> setPosAt(0,QPointF(Lbound,(id-3)*100+Central_py+Modifier[id]));
+        animation[id]-> setPosAt(1,QPointF(Lbound,(id-2)*100+Central_py+Modifier[id+1]));
+        animation0[id]-> setPosAt(0,QPointF(Lbound + 10,(id-3)*100+10+Central_py+Modifier[id]));
+        animation0[id]-> setPosAt(1,QPointF(Lbound + 10,(id-2)*100+10+Central_py+Modifier[id+1]));
+        animation[id] -> setScaleAt(0,Scale[id]/vec[i].orig,Scale[id]/vec[i].orig);
+        animation[id] -> setScaleAt(1,Scale[id + 1]/vec[i].orig, Scale[id + 1]/vec[i].orig);
+
+        animation0[id] -> setScaleAt(0,Scale[id]/vec[i].orig,Scale[id]/vec[i].orig);
+        animation0[id] -> setScaleAt(1,Scale[id + 1]/vec[i].orig, Scale[id + 1]/vec[i].orig);
 
         timeline[id] -> start();
     }
@@ -127,10 +144,17 @@ void selection_scene::genAnimationDown(){
         animation[id] -> setTimeLine(timeline[id]);
         animation0[id] -> setTimeLine(timeline[id]);
 
-        animation[id]-> setPosAt(0,QPointF(Lbound,(id-3)*100+Central_py));
-        animation[id]-> setPosAt(1,QPointF(Lbound,(id-4)*100+Central_py));
-        animation0[id]-> setPosAt(0,QPointF(Lbound + 10,(id-3)*100+10+Central_py));
-        animation0[id]-> setPosAt(1,QPointF(Lbound + 10,(id-4)*100+10+Central_py));
+        animation[id]-> setPosAt(0,QPointF(Lbound,(id-3)*100+Central_py+Modifier[id]));
+        animation[id]-> setPosAt(1,QPointF(Lbound,(id-4)*100+Central_py+Modifier[id-1]));
+        animation0[id]-> setPosAt(0,QPointF(Lbound + 10,(id-3)*100+10+Central_py+Modifier[id]));
+        animation0[id]-> setPosAt(1,QPointF(Lbound + 10,(id-4)*100+10+Central_py+Modifier[id-1]));
+
+
+        animation[id] -> setScaleAt(0,Scale[id]/vec[i].orig,Scale[id]/vec[i].orig);
+        animation[id] -> setScaleAt(1,Scale[id - 1]/vec[i].orig, Scale[id - 1]/vec[i].orig);
+
+        animation0[id] -> setScaleAt(0,Scale[id]/vec[i].orig,Scale[id]/vec[i].orig);
+        animation0[id] -> setScaleAt(1,Scale[id - 1]/vec[i].orig, Scale[id - 1]/vec[i].orig);
 
         timeline[id] -> start();
     }
@@ -147,7 +171,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         for(int i = 0;i < Num; i ++){
             vec[i].posy = (i - central) * 100 + Central_py;
             if(abs(i - central) <= 2){
-                vec[i] .rect ->setOpacity(1.0);
+                vec[i].rect ->setOpacity(1.0);
                 vec[i].txt->setOpacity(1.0);
             }
             else if(abs(i - central) >= 4){
