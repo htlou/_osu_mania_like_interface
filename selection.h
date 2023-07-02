@@ -50,6 +50,8 @@ public:
     QGraphicsSimpleTextItem *MusWriter;
     QGraphicsSimpleTextItem *Difficulty;
     QGraphicsSimpleTextItem *Length;
+    QGraphicsSimpleTextItem *Instruction1;
+    QGraphicsSimpleTextItem *Instruction2;
     QTimeLine *timeline[7];
     QGraphicsPixmapItem *background;
 

@@ -74,19 +74,30 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     Length = new QGraphicsSimpleTextItem("Length:");
     Difficulty = new QGraphicsSimpleTextItem("Difficulty:");
 
+    Instruction1 = new QGraphicsSimpleTextItem("Press W and S to scroll");
+    Instruction2 = new QGraphicsSimpleTextItem("Press Space to select");
+
     MusWriter -> setFont(font);
     Length -> setFont(font);
     Difficulty -> setFont(font);
+    Instruction1 -> setFont(font);
+    Instruction2 -> setFont(font);
     MusWriter -> setBrush(Qt::white);
     Length -> setBrush(Qt::white);
     Difficulty -> setBrush(Qt::white);
+    Instruction1 -> setBrush(Qt::white);
+    Instruction2 -> setBrush(Qt::white);
     MusWriter -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20);
     Length -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 80);
     Difficulty -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 160);
+    Instruction1 -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.70);
+    Instruction2 -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.70 + 80);
 
     addItem(MusWriter);
     addItem(Length);
     addItem(Difficulty);
+    addItem(Instruction1);
+    addItem(Instruction2);
 
     UpdateInfo();
 
