@@ -241,6 +241,9 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         qDebug() << "now Entered" << " " << SelectedPath;
         emit selected();
     }
+    else if(event -> key() == Qt::Key_Escape){
+        emit backSig();
+    }
 }
 
 void selection_scene::UpdateInfo(){

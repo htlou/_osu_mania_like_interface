@@ -16,6 +16,8 @@ public:
     QString m_text;
     int W,H;
     bool m_hover, m_pressed;
+    bool m_selected = 0;
+    bool can_selected = 0;
 
     settings_button(const QString &text, int Wi, int He, QGraphicsObject *parent = nullptr)
         : QGraphicsObject(parent), m_text(text), m_hover(false), m_pressed(false) {

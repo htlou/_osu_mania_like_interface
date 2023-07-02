@@ -5,7 +5,9 @@
 
 keysets::keysets(const QString &str1, const QString& str2, int px, int py, QFont font__){
     button = new settings_button(str1,200,50,nullptr);
+    button -> can_selected = 1;
     txt = new QGraphicsSimpleTextItem(str2);
+    txt -> setBrush(Qt::white);
     p_x = px, p_y = py;
     font_ = font__; flag = 0;
     connect(button,&settings_button::button_pressed,this,&keysets::being_pressed);
@@ -13,14 +15,15 @@ keysets::keysets(const QString &str1, const QString& str2, int px, int py, QFont
 
 void keysets::being_pressed(){
     flag = 1;
-    txt -> setBrush(Qt::red);
+    txt -> setBrush(Qt::white);
     emit pressed();
 }
 
 void keysets::release_(){
     flag = 0;
-    txt -> setBrush(Qt::black);
-    button -> m_pressed = false;
+    txt -> setBrush(Qt::white);
+    button -> m_pressed = 0;
+    button -> m_selected = 0;
     button -> update();
 }
 
@@ -51,12 +54,12 @@ void settings_button::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
     Q_UNUSED(widget);
 
     QColor color = m_hover ? QColor(255, 255, 255, 50) : QColor(0, 0, 0, 50);
-    if (m_pressed) {
+    if (m_pressed || (can_selected && m_selected)) {
         color = QColor(255, 255, 255, 100);
     }
 
     painter->setRenderHint(QPainter::Antialiasing);
-    painter->setPen(QPen(Qt::white, 2));
+    painter->setPen(QPen(Qt::white, 0));
     painter->setBrush(color);
 
     painter->drawRoundedRect(boundingRect(), 10, 10);
@@ -109,6 +112,7 @@ void settings_scene::keyPressEvent(QKeyEvent *event){
 
 void settings_button::mousePressEvent(QGraphicsSceneMouseEvent *event){
     m_pressed = true;
+    m_selected = true;
     update();
     //    QGraphicsObject::mousePressEvent(event);
 }
