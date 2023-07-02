@@ -31,7 +31,7 @@ public:
     int Num; // music num
     int Nump = 5;
     int central;
-    int Central_py = 700;
+    int Central_py = SCREEN_HEIGHT / 2 - 35;
     int Lbound = 220;
     bool flag_000 = 0;
     qreal Opacity[7] = {0,1,1,1,1,1,0};
@@ -47,10 +47,14 @@ public:
     QGraphicsItemAnimation *animation0[7];
     QGraphicsOpacityEffect *opacityEffect[7];
     QGraphicsOpacityEffect *opacityEffect0[7];
+    QGraphicsSimpleTextItem *MusWriter;
+    QGraphicsSimpleTextItem *Difficulty;
+    QGraphicsSimpleTextItem *Length;
     QTimeLine *timeline[7];
     QGraphicsPixmapItem *background;
 
     void keyPressEvent(QKeyEvent *event);
+    void UpdateInfo();
 
 public slots:
     void backSlot();

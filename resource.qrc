@@ -18,6 +18,8 @@
         <file>data/1/chart.txt</file>
         <file>data/1/audio.mp3</file>
         <file>data/1/bga.mp4</file>
+        <file>data/filepath4/info.txt</file>
+        <file>data/1/info.txt</file>
     </qresource>
     <qresource prefix="/element">
         <file>resources/detect_line.png</file>

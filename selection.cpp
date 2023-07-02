@@ -66,6 +66,31 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     vec[0].orig = 1.40;
     for(int i = 0; i < Num; i ++) addItem_(&vec[i], i <= 3 ? Opacity[i + 3] : 0);
 
+
+    QFont font = DefaultFont;
+    font.setPointSize(28);
+    font.setBold(1);
+    MusWriter = new QGraphicsSimpleTextItem("Music Writer:");
+    Length = new QGraphicsSimpleTextItem("Length:");
+    Difficulty = new QGraphicsSimpleTextItem("Difficulty:");
+
+    MusWriter -> setFont(font);
+    Length -> setFont(font);
+    Difficulty -> setFont(font);
+    MusWriter -> setBrush(Qt::white);
+    Length -> setBrush(Qt::white);
+    Difficulty -> setBrush(Qt::white);
+    MusWriter -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20);
+    Length -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 80);
+    Difficulty -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 160);
+
+    addItem(MusWriter);
+    addItem(Length);
+    addItem(Difficulty);
+
+    UpdateInfo();
+
+
     // draw back-to-menu button
     MenuButton* backBtn = new MenuButton("back-icon");
     backBtn->setPos(20, 20);
@@ -179,6 +204,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         if(central > 0){
         genAnimationUp();
         central --;
+        UpdateInfo();
         for(int i = 0;i < Num; i ++){
             vec[i].posy = (i - central) * 100 + Central_py;
             if(abs(i - central) <= 2){
@@ -196,6 +222,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         if(central + 1 < Num){
         genAnimationDown();
         central ++;
+        UpdateInfo();
         for(int i = 0;i < Num; i ++){
             vec[i].posy = (i - central) * 100 + Central_py;
             if(abs(i - central) <= 2){
@@ -216,6 +243,26 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
     }
 }
 
+void selection_scene::UpdateInfo(){
+    QString Path = ":/data/data";
+    QString Route = vec[central].Path;
+    QFile file(Path+"/"+Route+"/info.txt");
+    qDebug() << Path + "/" + Route + "/info.txt";
+    if(file.open(QIODevice :: ReadOnly | QIODevice :: Text)){
+        QTextStream stream(&file);
+        QString MW = stream.readLine();
+        QString L = stream.readLine();
+        QString DI = stream.readLine();
+
+        qDebug() << MW;
+        MusWriter -> setText("Music Writer: " + MW);
+        Length -> setText("Length: " + L + " sec");
+        Difficulty -> setText("Difficulty Level:" + DI);
+        //addItem(MusWriter);
+        //addItem(Length);
+        //addItem(Difficulty);
+    }
+}
 
 void selection_scene::backSlot()
 {
