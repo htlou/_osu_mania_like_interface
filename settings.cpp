@@ -4,7 +4,7 @@
 #include <QGraphicsPixmapItem>
 
 keysets::keysets(const QString &str1, const QString& str2, int px, int py, QFont font__){
-    button = new settings_button(str1,nullptr);
+    button = new settings_button(str1,200,50,nullptr);
     txt = new QGraphicsSimpleTextItem(str2);
     p_x = px, p_y = py;
     font_ = font__; flag = 0;
@@ -25,32 +25,24 @@ void keysets::release_(){
 }
 
 void settings_scene::pl1(){
-    L2 -> release_(), L3 -> release_(), R1 -> release_(), R2 -> release_(), R3 -> release_();
+    L2 -> release_(), L3 -> release_(), R1 -> release_();
     nowchange = 1;
 }
 void settings_scene::pl2(){
-    L1 -> release_(), L3 -> release_(), R1 -> release_(), R2 -> release_(), R3 -> release_();
+    L1 -> release_(), L3 -> release_(), R1 -> release_();
     nowchange = 2;
 }
 void settings_scene::pl3(){
-    L2 -> release_(), L1 -> release_(), R1 -> release_(), R2 -> release_(), R3 -> release_();
+    L1 -> release_(), L2 -> release_(), R1 -> release_();
     nowchange = 3;
 }
 void settings_scene::pr1(){
-    L2 -> release_(), L3 -> release_(), L1 -> release_(), R2 -> release_(), R3 -> release_();
+    L2 -> release_(), L3 -> release_(), L1 -> release_();
     nowchange = 4;
-}
-void settings_scene::pr2(){
-    L2 -> release_(), L3 -> release_(), R1 -> release_(), L1 -> release_(), R3 -> release_();
-    nowchange = 5;
-}
-void settings_scene::pr3(){
-    L2 -> release_(), L3 -> release_(), R1 -> release_(), R2 -> release_(), L1 -> release_();
-    nowchange = 6;
 }
 
 QRectF settings_button::boundingRect() const{
-    return QRectF(0, 0, 200, 50);
+    return QRectF(0, 0, W, H);
 }
 
 void settings_button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -69,7 +61,20 @@ void settings_button::paint(QPainter *painter, const QStyleOptionGraphicsItem *o
 
     painter->drawRoundedRect(boundingRect(), 10, 10);
     painter->setPen(QPen(Qt::white));
+
+    QFont font___ = DefaultFont;
+    font___.setPointSize(16);
+    painter->setFont(font___);
     painter->drawText(boundingRect(), Qt::AlignCenter, m_text);
+}
+
+void settings_scene::addkeysets(keysets *w){
+    int px = w->p_x, py = w->p_y;
+    addItem(w->button);
+    addItem(w->txt);
+    (w->button)->setPos(px,py);
+    (w->txt)->setPos(px+240,py);
+    (w->txt)->setFont(w->font_);
 }
 
 void settings_scene::keyReleaseEvent(QKeyEvent *event){
@@ -100,16 +105,6 @@ void settings_scene::keyPressEvent(QKeyEvent *event){
         R1 -> release_();
         nowchange = -1;
     }
-    if(nowchange == 5){
-        (R2 -> txt) -> setText("Key_" + QString((char)(event -> key() - 'A' + 65)));
-        R2 -> release_();
-        nowchange = -1;
-    }
-    if(nowchange == 6){
-        (R3 -> txt) -> setText("Key_" + QString((char)(event -> key() - 'A' + 65)));
-        R3 -> release_();
-        nowchange = -1;
-    }
 }
 
 void settings_button::mousePressEvent(QGraphicsSceneMouseEvent *event){
@@ -119,7 +114,7 @@ void settings_button::mousePressEvent(QGraphicsSceneMouseEvent *event){
 }
 
 void settings_button::mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
-    //m_pressed = false;
+    m_pressed = false;
     //update();
     emit button_pressed();
     //    QGraphicsObject::mouseReleaseEvent(event);
@@ -137,22 +132,44 @@ void settings_button::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     //    QGraphicsItem::hoverLeaveEvent(event);
 }
 
-void settings_scene::senderrormsg(){
+void settings_scene::senderrormsg(int Pos){
     errormsg = new QGraphicsSimpleTextItem("Repeated Keys. Please check again.");
+    QFont Font = DefaultFont;
+    Font.setPointSize(15);
     errormsg -> setBrush(Qt::red);
-    errormsg -> setPos(50,700);
+    errormsg -> setFont(Font);
+    errormsg -> setPos(150, 75 + 100 + Pos * 150);
+
     addItem(errormsg);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(1000);
+    opacityAnimation->setKeyValueAt(0.0,0);
+    opacityAnimation->setKeyValueAt(0.2,1);
+    opacityAnimation->setKeyValueAt(0.8,1);
+    opacityAnimation->setKeyValueAt(1.0,0);
+    errormsg -> setGraphicsEffect(opacityEffect);
+    opacityAnimation -> start();
+
+
 }
 
 void settings_scene::return_slot(){
     qDebug() << "return from settings";
-    for(int i = 0; i < 6; i ++)
-        for(int j = i + 1; j < 6; j ++)
+    for(int i = 0; i < 4; i ++)
+        for(int j = i + 1; j < 4; j ++)
             if(key_val_[i] == key_val_[j]){
-                senderrormsg();
+                senderrormsg(i);
                 return;
             }
     emit exit_settings();
+}
+
+void settings_scene::AddVolumeBar(VolumeBar *v){
+    addItem(v -> Instruction);
+    addItem(v -> D1);
+    addItem(v -> A1);
+    addItem(v -> Vol);
 }
 
 settings_scene::settings_scene(QObject *parent): QGraphicsScene(parent){
@@ -162,28 +179,29 @@ settings_scene::settings_scene(QObject *parent): QGraphicsScene(parent){
     background->setPos(0,0);
     this->addItem(background);
 
-    settings_button* return_button = new settings_button("Exit", nullptr);
+    settings_button* return_button = new settings_button("Exit",150,150,nullptr);
+    return_button -> setPos(SCREEN_WIDTH - 200, SCREEN_HEIGHT - 200);
     addItem(return_button);
     connect(return_button, &settings_button::button_pressed,this,&settings_scene::return_slot);
 
-    QFont font__ = QFont("Arial",22);
+    VBar = new VolumeBar;
+    AddVolumeBar(VBar);
+
+    QFont font__ = DefaultFont;
+    font__.setPointSize(28);
 
     nowchange = -1;
     L1 = new keysets("Left Key 1","Key_"+QString((char)(key_val_[0]-65+'A')),100,100,font__);
-    L2 = new keysets("Left Key 2","Key_"+QString((char)(key_val_[1]-65+'A')),350,100,font__);
-    L3 = new keysets("Left Key 3","Key_"+QString((char)(key_val_[2]-65+'A')),600,100,font__);
-    R1 = new keysets("Right Key 1","Key_"+QString((char)(key_val_[3]-65+'A')),100,300,font__);
-    R2 = new keysets("Right Key 2","Key_"+QString((char)(key_val_[4]-65+'A')),350,300,font__);
-    R3 = new keysets("Right Key 3","Key_"+QString((char)(key_val_[5]-65+'A')),600,300,font__);
+    L2 = new keysets("Left Key 2","Key_"+QString((char)(key_val_[1]-65+'A')),100,250,font__);
+    L3 = new keysets("Right Key 1","Key_"+QString((char)(key_val_[2]-65+'A')),100,400,font__);
+    R1 = new keysets("Right Key 2","Key_"+QString((char)(key_val_[3]-65+'A')),100,550,font__);
 
-    addkeysets(L1),addkeysets(L2),addkeysets(L3),addkeysets(R1),addkeysets(R2),addkeysets(R3);
+    addkeysets(L1),addkeysets(L2),addkeysets(L3),addkeysets(R1);
 
     connect(L1,&keysets::pressed,this,&settings_scene::pl1);
     connect(L2,&keysets::pressed,this,&settings_scene::pl2);
     connect(L3,&keysets::pressed,this,&settings_scene::pl3);
     connect(R1,&keysets::pressed,this,&settings_scene::pr1);
-    connect(R2,&keysets::pressed,this,&settings_scene::pr2);
-    connect(R3,&keysets::pressed,this,&settings_scene::pr3);
     //位置是随便放的
 }
 
@@ -204,12 +222,58 @@ void settings_window::resizeEvent(QResizeEvent *event){
 }
 
 void settings_window::quit_settings(){
-    for(int i = 0; i < 6; i ++)
-        for(int j = i + 1; j < 6; j ++)
+    for(int i = 0; i < 4; i ++)
+        for(int j = i + 1; j < 4; j ++)
             if(key_val_[i] == key_val_[j]){
-                scene -> senderrormsg();
+                scene -> senderrormsg(i);
                 return;
             }
     emit quit_settings_();
     close();
 }
+
+QString Int2String2(int x){
+    QString ans("");
+    if(x == 0) ans = QString("0");
+    while(x){
+        ans.prepend((char)(x % 10 + 48));
+        x /= 10;
+    }
+    return ans;
+}
+
+VolumeBar::VolumeBar(){
+    D1 = new settings_button("-",50,50,nullptr);
+    A1 = new settings_button("+",50,50,nullptr);
+    D1 -> setPos(100,820);
+    A1 -> setPos(600,820);
+    Vol = new QGraphicsSimpleTextItem(Int2String2(music_vol/5));
+    Instruction = new QGraphicsSimpleTextItem("Music Volume");
+    QFont Font = DefaultFont; Font.setPointSize(44);
+    Vol -> setFont(Font);
+    Vol -> setPos(340,800);
+    Font.setPointSize(20);
+    Instruction -> setFont(Font);
+    Instruction -> setPos(100, 740);
+
+    connect(D1,&settings_button::button_pressed,this,&VolumeBar::Dec1);
+    connect(A1,&settings_button::button_pressed,this,&VolumeBar::Add1);
+}
+
+void VolumeBar::Dec1(){
+    if(music_vol == 0)return;
+    music_vol -= 5;
+    Vol -> setText(Int2String2(music_vol/5));
+    if(music_vol <= 45) Vol -> setPos(360,800);
+    else Vol -> setPos(340, 800);
+}
+
+void VolumeBar::Add1(){
+    if(music_vol == 100) return;
+    music_vol += 5;
+    Vol -> setText(Int2String2(music_vol/5));
+    if(music_vol <= 45) Vol -> setPos(360,800);
+    else Vol -> setPos(340, 800);
+}
+
+

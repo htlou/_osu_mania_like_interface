@@ -118,7 +118,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 // maybe some press effect here
                 detectLines[i]->onKeyPress();
 
-                int now_time = e_timer.elapsed() - pause_time;
+                int now_time = e_timer.elapsed() - pauseTime;
                 now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
                 qDebug()<< i <<" " << now_time<<" "<< "pressed";
                 while(ptr[i] < tm[i].size() && now_time - tm[i][ptr[i]].first > eps){
@@ -162,7 +162,7 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
             // deactivate key shape (color)
             detectLines[i]->onKeyRelease();
 
-            int now_time = e_timer.elapsed() - pause_time;
+            int now_time = e_timer.elapsed() - pauseTime;
             now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
 
             int R = tm[i][ptr[i]].second;
@@ -299,7 +299,7 @@ void GameScene :: timerFallingKey() {
 void GameScene::handleEndOfFalling()
 {
     qDebug() << "handle end of falling";
-    qDebug() << e_timer.elapsed() - pause_time << " " << e_timer.elapsed() << " " << pause_time;
+    qDebug() << e_timer.elapsed() - pauseTime << " " << e_timer.elapsed() << " " << pauseTime;
     queueFalling.pop_front();
 }
 
@@ -323,6 +323,7 @@ void GameScene :: Read_Chart_Data(const QString & Path){
     int Track_num = ReadInt(&file);
     nTracks = Track_num;
     Total_time = ReadInt(&file);
+    FullTime = Total_time;
     memset(pressed_and_long,0,sizeof(pressed_and_long));
 
     //Total_time = 11000; // Just for debugging
@@ -414,6 +415,9 @@ void GameScene::GoOnGame(){
     // restart timer events
     keyFallingTimer->start(INTERVAL);
     pauseTime += e_timer.elapsed() - pauseClock;
+    FullTime = -pauseTime + e_timer.elapsed();
+    AllTimer->start(Total_time - FullTime);
+    is_paused = 0;
     // deal with key falling
     for (int i = 0; i < queueFalling.size(); ++i) {
         if (queueFalling[i]->isFalling) {
@@ -427,7 +431,8 @@ void GameScene::pauseGame()
 {
     // stop timer, record pause time
     qDebug()<<"stop!!!";
-    double start_pause = clock();
+    //start_pause = clock();
+    is_paused = 1;
     keyFallingTimer->stop();
     AllTimer -> stop();
     player->pause();
@@ -461,7 +466,6 @@ void GameScene::pauseGame()
     pauseBGText->setScale(SCREEN_WIDTH*0.3 / pauseText.width());
     pauseBGText->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.4);
     addItem(pauseBGText);
-    pause_time += clock() - start_pause;
 }
 
 void GameScene::endGame(){
@@ -492,7 +496,8 @@ void GameScene::endgame0(){
 }
 
 void GameScene::checkMiss(){
-    int now_time = e_timer.elapsed() - pause_time;
+    if(is_paused) return;
+    int now_time = e_timer.elapsed() - pauseTime;
     //now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
     for(int i = 0; i < nTracks; i ++){
         qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];

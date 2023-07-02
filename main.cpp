@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     QSize screen = QGuiApplication::primaryScreen()->size();
 
-    QFile fontFile(":/font/font/Saira/static/Saira_Expanded-SemiBold.ttf");
+    QFile fontFile(":/font/font/Saira/static/Saira_Expanded-Regular.ttf");
     if (fontFile.open(QIODevice::ReadOnly)) {
         QByteArray fontData = fontFile.readAll();
         fontFile.close();

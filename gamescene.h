@@ -80,11 +80,11 @@ private:
     int status; // 0 for menu
     int nTracks; // number of tracks
     int Total_time;
-    int pause_time = 0; // to detect pause
     int pauseTime = 0, pauseClock = 0;  // pauseTime: accumulate pause time; pauseClock: save the tick when the game is paused
     int score = 0, combo = 0; // Score
     int ptr[11]; // To evaluate the press event, Pointer of notes
     bool pressed_and_long[11];
+    bool is_paused = 0;
     qreal trackWidth, trackInterval, trackHeight, track_x;
     qreal velocity; // falling velocity, per msec
     QTimer *keyFallingTimer;
@@ -109,6 +109,7 @@ private:
     int eps = 400; //key pressed in this time will be calculated(otherwise neglected)
     int eps_good = 300; // eps_good
     int eps_perfect = 200; // eps_perfect
+    int FullTime = 0;
 
     QMediaPlayer *player = new QMediaPlayer;
     QAudioOutput *audioOutput = new QAudioOutput;

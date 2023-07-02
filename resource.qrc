@@ -46,5 +46,6 @@
         <file>Saria_Default.ttf</file>
         <file>Saria_Italic.ttf</file>
         <file>font/Saira/static/Saira_Expanded-SemiBold.ttf</file>
+        <file>font/Saira/static/Saira_Expanded-Regular.ttf</file>
     </qresource>
 </RCC>

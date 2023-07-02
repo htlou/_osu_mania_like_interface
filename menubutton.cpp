@@ -7,6 +7,7 @@ MenuButton::MenuButton(const QString &name)
 {
     //QPixmap start(":/element/resources/play.png");
     QPixmap start(":/element/resources/"+name+".png");
+    m_hover = m_pressed = 0;
     setPixmap(start);
     setOffset(-start.width()/2, -start.height()/2);
     setAcceptHoverEvents(true);

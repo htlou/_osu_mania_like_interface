@@ -21,27 +21,29 @@ MainMenu::MainMenu(QObject *parent): QGraphicsScene(parent){
 //    addItem(settingsButton);
 //    addItem(quitButton);
 
+    qDebug() << SCREEN_WIDTH << " " << SCREEN_HEIGHT << " THIS IS SCREEN";
+
     QGraphicsRectItem *menubar = new QGraphicsRectItem(0, SCREEN_HEIGHT*0.35, SCREEN_WIDTH, SCREEN_HEIGHT*0.2);
     menubar->setBrush(Qt::black);
     menubar->setOpacity(0.3);
     addItem(menubar);
     QGraphicsPixmapItem *logo = new QGraphicsPixmapItem(QPixmap(":/element/resources/psu-icon.png"));
     logo->setOffset(-logo->pixmap().width()/2, -logo->pixmap().height()/2);
-    logo->setScale(SCREEN_WIDTH * 0.2 / logo->pixmap().width());
+    logo->setScale(SCREEN_WIDTH * 0.12 / logo->pixmap().width());
     logo->setPos(SCREEN_WIDTH * 0.3, SCREEN_HEIGHT * 0.45);
     addItem(logo);
     MenuButton *start = new MenuButton("menu-play");
-    start->setScale(SCREEN_WIDTH * 0.2 / start->pixmap().width());
+    start->setScale(SCREEN_WIDTH * 0.12 / start->pixmap().width());
     start->setPos(SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.35);
     addItem(start);
     connect(start, &MenuButton::clicked, this, &MainMenu::enter_select_slot);
     MenuButton *setting = new MenuButton("key-setting");
-    setting->setScale(SCREEN_WIDTH * 0.2 / setting->pixmap().width());
+    setting->setScale(SCREEN_WIDTH * 0.12 / setting->pixmap().width());
     setting->setPos(SCREEN_WIDTH * 0.58, SCREEN_HEIGHT * 0.35);
     addItem(setting);
     connect(setting, &MenuButton::clicked, this, &MainMenu::enter_settings_slot);
     MenuButton *quit = new MenuButton("menu-quit");
-    quit->setScale(SCREEN_WIDTH * 0.2 / quit->pixmap().width());
+    quit->setScale(SCREEN_WIDTH * 0.12 / quit->pixmap().width());
     quit->setPos(SCREEN_WIDTH * 0.71, SCREEN_HEIGHT * 0.35);
     addItem(quit);
     connect(quit, &MenuButton::clicked, this, &MainMenu::quit_game_slot);

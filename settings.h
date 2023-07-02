@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 #include "globalvariations.h"
 #include <QResizeEvent>
 
@@ -12,10 +14,12 @@ class settings_button : public QGraphicsObject{
     Q_OBJECT
 public:
     QString m_text;
+    int W,H;
     bool m_hover, m_pressed;
 
-    settings_button(const QString &text, QGraphicsObject *parent = nullptr)
+    settings_button(const QString &text, int Wi, int He, QGraphicsObject *parent = nullptr)
         : QGraphicsObject(parent), m_text(text), m_hover(false), m_pressed(false) {
+        W = Wi, H = He;
         setAcceptHoverEvents(true);
         setAcceptedMouseButtons(Qt::LeftButton);
         setCursor(Qt::PointingHandCursor);
@@ -51,6 +55,22 @@ public:
     void release_();
 };
 
+class VolumeBar : public QObject{
+    Q_OBJECT
+
+public:
+    //    settings_button* A2,D2;
+    settings_button* A1;
+    settings_button* D1;
+    QGraphicsSimpleTextItem* Vol;
+    QGraphicsSimpleTextItem* Instruction;
+    VolumeBar();
+    //    void Add2();
+    void Add1();
+    //    void Dec2();
+    void Dec1();
+};
+
 class settings_scene : public QGraphicsScene {
 Q_OBJECT
 
@@ -65,8 +85,7 @@ public:
     keysets* L2;
     keysets* L3;
     keysets* R1;
-    keysets* R2;
-    keysets* R3;
+    VolumeBar* VBar;
     int nowchange;
 
     QGraphicsPixmapItem *background;
@@ -74,22 +93,14 @@ public:
     void pl2();
     void pl3();
     void pr1();
-    void pr2();
-    void pr3();
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-    void senderrormsg();
+    void senderrormsg(int x);
+    void AddVolumeBar(VolumeBar *v);
 
     QGraphicsSimpleTextItem *errormsg;
 
-    void addkeysets(keysets* w){
-        int px = w->p_x, py = w->p_y;
-        addItem(w->button);
-        addItem(w->txt);
-        (w->button)->setPos(px,py);
-        (w->txt)->setPos(px+30,py+80);
-        (w->txt)->setFont(w->font_);
-    }
+    void addkeysets(keysets* w);
     settings_scene(QObject *parent = nullptr);
 };
 
@@ -110,8 +121,6 @@ public:
     void volumebar();
     void quit_settings();
 };
-
-
 
 
 #endif // SETTINGS_H
