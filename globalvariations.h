@@ -14,6 +14,7 @@ extern double VELOCITY, LATENCY, INTERVAL;
 extern int TRACK_WIDTH, TRACK_HEIGHT; // to be specified after entering the game scene
 extern QString SelectedPath;
 extern QFont DefaultFont;
+extern QString rootdir;
 
 class GlobalVariations
 {

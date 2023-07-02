@@ -48,7 +48,7 @@ void GenOpacityAnimation(T* w){
 selection_scene::selection_scene(MyMainWindow *_parent)
     : parent(_parent)
 {
-    QFile file(":/data/tree.txt");
+    QFile file(":/globaldata/data/tree.txt");
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
     QTextStream stream(&file);
     central = 0;
@@ -91,20 +91,24 @@ selection_scene::selection_scene(MyMainWindow *_parent)
 
     Instruction1 = new QGraphicsSimpleTextItem("Press W and S to scroll");
     Instruction2 = new QGraphicsSimpleTextItem("Press Space to select");
+    YrScore = new QGraphicsSimpleTextItem("Your have no attemps");
 
     MusWriter -> setFont(font);
     Length -> setFont(font);
     Difficulty -> setFont(font);
     Instruction1 -> setFont(font);
     Instruction2 -> setFont(font);
+    YrScore -> setFont(font);
     MusWriter -> setBrush(Qt::white);
     Length -> setBrush(Qt::white);
     Difficulty -> setBrush(Qt::white);
     Instruction1 -> setBrush(Qt::white);
     Instruction2 -> setBrush(Qt::white);
+    YrScore -> setBrush(Qt::white);
     MusWriter -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20);
     Length -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 80);
     Difficulty -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 160);
+    YrScore -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.20 + 240);
     Instruction1 -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.70);
     Instruction2 -> setPos(SCREEN_WIDTH * 0.55, SCREEN_HEIGHT * 0.70 + 80);
 
@@ -113,12 +117,14 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     addItem(Difficulty);
     addItem(Instruction1);
     addItem(Instruction2);
+    addItem(YrScore);
 
     GenOpacityAnimation(MusWriter);
     GenOpacityAnimation(Length);
     GenOpacityAnimation(Difficulty);
     GenOpacityAnimation(Instruction1);
     GenOpacityAnimation(Instruction2);
+    GenOpacityAnimation(YrScore);
 
     timer = new QElapsedTimer;
     timer -> start();
@@ -130,6 +136,9 @@ selection_scene::selection_scene(MyMainWindow *_parent)
     backBtn->setPos(20, 20);
     backBtn->setScale(0.25);
     addItem(backBtn);
+
+    GenOpacityAnimation(backBtn);
+
     connect(backBtn, &MenuButton::clicked, this, &selection_scene::backSlot);
 
 //    QGraphicsRectItem* SelectRect = new QGraphicsRectItem(0,0,320,46);
@@ -262,7 +271,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
         for(int i = 0;i < Num; i ++){
             vec[i].posy = (i - central) * 100 + Central_py;
             if(abs(i - central) <= 2){
-                vec[i] .rect ->setOpacity(1.0);
+                vec[i].rect ->setOpacity(1.0);
                 vec[i].txt->setOpacity(1.0);
             }
             else if(abs(i-central) >= 4){
@@ -283,7 +292,7 @@ void selection_scene::keyPressEvent(QKeyEvent* event){
 }
 
 void selection_scene::UpdateInfo(){
-    QString Path = ":/data/data";
+    QString Path = rootdir+"/data";
     QString Route = vec[central].Path;
     QFile file(Path+"/"+Route+"/info.txt");
     qDebug() << Path + "/" + Route + "/info.txt";
@@ -292,11 +301,17 @@ void selection_scene::UpdateInfo(){
         QString MW = stream.readLine();
         QString L = stream.readLine();
         QString DI = stream.readLine();
+        QString Ys = stream.readLine();
+        if(Ys.toInt() == -1){
+            Ys = "You have no attempts";
+        }
+        else Ys = "Your best score is: " + Ys;
 
         qDebug() << MW;
         MusWriter -> setText("Music Writer: " + MW);
         Length -> setText("Length: " + L + " sec");
         Difficulty -> setText("Difficulty Level:" + DI);
+        YrScore -> setText(Ys);
         //addItem(MusWriter);
         //addItem(Length);
         //addItem(Difficulty);

@@ -21,8 +21,9 @@ GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
-    Path = ":/data/data";
+    Path = ":/datamusic/data";
     DefaultPath = ":/resources";
+    Route_ = Route;
 
     setSceneRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     s_width = sceneRect().size().toSize().width(); s_height = sceneRect().size().toSize().height();
@@ -55,6 +56,16 @@ GameScene::GameScene(QString Route, QObject *parent)
     status = 1;
     startGame(Route);
     start_time = clock();
+}
+
+QString Int2String0(int x){ // num位数，x数字，取x后num位转换为QString，不足补0
+    QString ans("");
+    if(!x) ans = QString("0");
+    while(x){
+        ans.prepend((char)(x % 10 + 48));
+        x /= 10;
+    }
+    return ans;
 }
 
 QString Int2String(int num, int x){ // num位数，x数字，取x后num位转换为QString，不足补0
@@ -578,6 +589,35 @@ void GameScene::pauseGame()
 }
 
 void GameScene::endGame(){
+    QFile file(rootdir+"/data/"+Route_+"/info.txt");
+    //qDebug() << file.open(QIODevice :: ReadWrite | QIODevice :: Text);
+    if(file.open(QIODevice :: ReadWrite | QIODevice :: Text)){
+        qDebug() << "rewrite info.txt";
+
+        QTextStream stream(&file);
+        QString MW = stream.readLine();
+        QString L = stream.readLine();
+        QString DI = stream.readLine();
+        QString Ys = stream.readLine();
+
+        int w = Ys.toInt();
+        qDebug() << score << " " << w;
+        if(score > w){
+            Ys = Int2String0(score);
+        }
+
+        file.resize(0);
+        QTextStream out(&file);
+        out << MW << '\n' << L << '\n' << DI << '\n' << Ys << '\n';
+
+        //qDebug() << MW;
+
+        //addItem(MusWriter);
+        //addItem(Length);
+        //addItem(Difficulty);
+    }
+
+
     EndingScene* eScene = new EndingScene(this,score);
     QGraphicsView* eview = new QGraphicsView(eScene, _parent); // 这里必须要加第二个参数_parent，否则会弹出一个新界面
     eview->setRenderHint(QPainter::Antialiasing);
@@ -610,7 +650,7 @@ void GameScene::checkMiss(){
     int now_time = e_timer.elapsed() - pauseTime;
     //now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
     for(int i = 0; i < nTracks; i ++){
-        qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
+        //qDebug() << i << " " << now_time << " " << tm[i][ptr[i]].first << " " << pressed_and_long[i];
         if((now_time - tm[i][ptr[i]].first) > eps && !pressed_and_long[i]){
             Miss(i);
             ptr[i] ++;

@@ -12,7 +12,7 @@
         <file>resources/menu-background-7.jpg</file>
         <file>resources/background-1.png</file>
     </qresource>
-    <qresource prefix="/data">
+    <qresource prefix="/datamusic">
         <file>data/1.txt</file>
         <file>data/1/BG.jpg</file>
         <file>data/1/chart.txt</file>
@@ -48,7 +48,7 @@
         <file>resources/pause-button.png</file>
         <file>resources/back-icon.png</file>
     </qresource>
-    <qresource prefix="/">
+    <qresource prefix="/globaldata">
         <file>data/tree.txt</file>
     </qresource>
     <qresource prefix="/font">

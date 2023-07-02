@@ -131,6 +131,8 @@ private:
     QGraphicsRectItem *pauseBGRect;
     QGraphicsPixmapItem *pauseBGText;
 
+    QString Route_;
+
 };
 
 QString Int2String(int num,int x);
