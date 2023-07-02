@@ -38,7 +38,7 @@ public slots:
     void handleCloseGameAndPauseWindow();
     void GoOnGame();
     void handleEndOfFalling();
-    void hintVanishSlot();
+    void hintVanishSlot(int pos);
     void pauseSlot();
 
 protected:

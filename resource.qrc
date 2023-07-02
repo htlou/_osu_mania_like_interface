@@ -52,10 +52,7 @@
         <file>Saria_Default.ttf</file>
         <file>Saria_Italic.ttf</file>
         <file>font/Saira/static/Saira_Expanded-SemiBold.ttf</file>
-<<<<<<< HEAD
         <file>font/Saira/static/Saira_Expanded-Regular.ttf</file>
-=======
         <file>font/Saira/static/Saira_Expanded-Light.ttf</file>
->>>>>>> 9659eb3088258ca6a74a288a1a0440067e93dba7
     </qresource>
 </RCC>
