@@ -5,6 +5,7 @@ stageHint::stageHint(const QString &name)
     QPixmap image(":/element/resources/"+name+".png");
     setPixmap(image);
     setOffset(-image.width()/2, -image.height()/2);
+    setScale(0.5);
 
     // set up animation
     zoomInAnimation = new QPropertyAnimation(this, "MyOpacity");

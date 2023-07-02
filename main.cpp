@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     QSize screen = QGuiApplication::primaryScreen()->size();
 
-    QFile fontFile(":/font/font/Saira/static/Saira_Expanded-Regular.ttf");
+    QFile fontFile(":/font/font/Saira/static/Saira_Expanded-Light.ttf");
     if (fontFile.open(QIODevice::ReadOnly)) {
         QByteArray fontData = fontFile.readAll();
         fontFile.close();
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
             DefaultFont.setFamily(fontFamilies.at(0));
         }
     }
-    DefaultFont.setPointSize(35);
+    DefaultFont.setPointSize(30);
 
     SCREEN_WIDTH = screen.width();
     SCREEN_HEIGHT = screen.height();
