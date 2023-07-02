@@ -437,8 +437,8 @@ void GameScene :: Read_Chart_Data(const QString & Path){
 
     //Total_time = 11000; // Just for debugging
     //decide KeyVal
-    for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
-            keyVal[i - st] = key_val_[i];
+    for(int i = 0; i < nTracks; i ++){
+            keyVal[i] = key_val_[i];
     }
 
     for(int i = 0; i < Track_num; i ++){
@@ -511,8 +511,8 @@ void GameScene::handleCloseGameAndPauseWindow(){
 }
 
 void GameScene::GoOnGame(){
-    for(int st = 2 - (6 - nTracks) / 2, i = st; i < st + nTracks; i ++){
-        keyVal[i - st] = key_val_[i];
+    for(int i = 0; i < nTracks; i ++){
+        keyVal[i] = key_val_[i];
     }
     // delete pause interface
     btnContinue->deleteLater();

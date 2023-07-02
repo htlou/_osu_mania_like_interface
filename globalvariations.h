@@ -7,7 +7,7 @@
 
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 extern double SCREEN_SCALE;
-extern int key_val_[6];
+extern int key_val_[4];
 extern int music_vol;
 extern int eps0,eps1,eps2;
 extern double VELOCITY, LATENCY, INTERVAL;
