@@ -29,12 +29,13 @@ MainMenu::MainMenu(QObject *parent): QGraphicsScene(parent){
     addItem(menubar);
     QGraphicsPixmapItem *logo = new QGraphicsPixmapItem(QPixmap(":/element/resources/psu-icon.png"));
     logo->setOffset(-logo->pixmap().width()/2, -logo->pixmap().height()/2);
-    logo->setScale(SCREEN_WIDTH * 0.12 / logo->pixmap().width());
+    logo->setScale(SCREEN_WIDTH * 0.2 / logo->pixmap().width());
     logo->setPos(SCREEN_WIDTH * 0.3, SCREEN_HEIGHT * 0.45);
     addItem(logo);
     MenuButton *start = new MenuButton("menu-play");
     start->setScale(SCREEN_WIDTH * 0.12 / start->pixmap().width());
     start->setPos(SCREEN_WIDTH * 0.45, SCREEN_HEIGHT * 0.35);
+    qDebug() << start ->scale()  << "this is scale";
     addItem(start);
     connect(start, &MenuButton::clicked, this, &MainMenu::enter_select_slot);
     MenuButton *setting = new MenuButton("key-setting");

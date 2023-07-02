@@ -9,7 +9,7 @@ MenuButton::MenuButton(const QString &name)
     QPixmap start(":/element/resources/"+name+".png");
     m_hover = m_pressed = 0;
     setPixmap(start);
-    setOffset(-start.width()/2, -start.height()/2);
+    //setOffset(-start.width()/2, -start.height()/2);
 
     setAcceptHoverEvents(true);
     setShapeMode(QGraphicsPixmapItem::BoundingRectShape); //设置按钮的响应范围为边界矩形的范围
@@ -21,7 +21,7 @@ void MenuButton::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     //    Q_UNUSED(option);
     //    Q_UNUSED(widget);
 
-    QColor color = m_hover ? QColor(255, 255, 255, 50) : QColor(0, 0, 0, 50);
+    QColor color = m_hover ? QColor(255, 255, 255, 50) : QColor(0, 0, 0, 0);
     if (m_pressed) {
         color = QColor(255, 255, 255, 100);
     }
