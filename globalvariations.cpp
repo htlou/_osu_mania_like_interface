@@ -8,7 +8,7 @@ int music_vol=50;
 int eps0=200,eps1=150,eps2=80;
 double VELOCITY = 10, LATENCY = 1, INTERVAL = 10;
 int TRACK_WIDTH = 1, TRACK_HEIGHT = 1;
-QFont DefaultFont = QFont("Arial",20);
+QFont DefaultFont = QFont("Arial",20), SmallFont = QFont("Arial",20);
 QString SelectedPath = QString("Default");
 QString rootdir = QString("");
 

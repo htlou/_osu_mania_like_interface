@@ -11,6 +11,13 @@
         <file>resources/menu-background-6.jpg</file>
         <file>resources/menu-background-7.jpg</file>
         <file>resources/background-1.png</file>
+        <file>resources/vague-bg-1.png</file>
+        <file>resources/vague-bg-2.png</file>
+        <file>resources/ranking-A.png</file>
+        <file>resources/ranking-B.png</file>
+        <file>resources/ranking-C.png</file>
+        <file>resources/ranking-D.png</file>
+        <file>resources/ranking-S.png</file>
     </qresource>
     <qresource prefix="/datamusic">
         <file>data/1.txt</file>

@@ -19,9 +19,11 @@ int main(int argc, char *argv[])
         QStringList fontFamilies = QFontDatabase::applicationFontFamilies(fontId);
         if (fontFamilies.size() > 0) {
             DefaultFont.setFamily(fontFamilies.at(0));
+            SmallFont.setFamily(fontFamilies.at(0));
         }
     }
     DefaultFont.setPointSize(30);
+    SmallFont.setPointSize(10);
 
     SCREEN_WIDTH = screen.width();
     SCREEN_HEIGHT = screen.height();

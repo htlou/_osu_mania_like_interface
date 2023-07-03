@@ -13,9 +13,9 @@ signals:
 public:
     EndingScene(QObject *parent = nullptr, int FinalScore = 0);
     int Score;
-    QGraphicsSimpleTextItem* YrScore;
+    QGraphicsSimpleTextItem *comboText, *AccText;
     QGraphicsSimpleTextItem* Instruction;
-    QGraphicsSimpleTextItem* Final_Score;
+    QGraphicsSimpleTextItem *Final_Score, *Max_combo, *Accuracy;
     QGraphicsPixmapItem *background;
 
     void keyPressEvent(QKeyEvent *event);
