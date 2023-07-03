@@ -325,7 +325,7 @@ void GameScene::startGame(QString Route) {
 void GameScene::setBackgroundItem() {
     // show background picture
     QPixmap bgPic(QPixmap(":/img/resources/background-1.png"));
-    bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    bgPic = bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
     background->setPos(0, 0);
     //background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
