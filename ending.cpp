@@ -22,7 +22,7 @@ QString Int2String_(int num, int x){ // num位数，x数字，取x后num位转�
     return ans;
 }
 
-EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
+EndingScene::EndingScene(QObject *parent,int v, qreal v_acc, int v_mxCombo):QGraphicsScene(parent),Score(v), _acc(v_acc), mxC(v_mxCombo){
     QPixmap _background(QPixmap(":/img/resources/background-1.png"));
     _background = _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     background = new QGraphicsPixmapItem(_background);
@@ -71,7 +71,7 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
     GenOpacityAnimationIn(Final_Score,1);
 
     // show max combo
-    QString m_combo = "72"; // max combo的数值需要从GameScene获取
+    QString m_combo = Int2String_(3,mxC); // max combo的数值需要从GameScene获取
     Max_combo = new QGraphicsSimpleTextItem(m_combo);
     Max_combo -> setFont(DefaultFont);
     Max_combo->setPos(SCREEN_WIDTH*0.55, SCREEN_HEIGHT*0.54);
@@ -87,7 +87,12 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
     GenOpacityAnimationIn(comboText,1);
 
     // show accuracy
-    QString acc = "96.24%"; // max combo的数值需要从GameScene获取
+    int w = qRound(_acc * 10000);
+    QString acc;
+    if(w >= 1000)
+    acc = Int2String_(2,w/100)+"."+Int2String_(2,w%100)+"%"; // max combo的数值需要从GameScene获取
+    if(w == 10000) acc = "100.00%";
+    if(w < 1000)acc = Int2String_(1,w/100)+"."+Int2String_(2,w%100)+"%";
     Accuracy = new QGraphicsSimpleTextItem(acc);
     Accuracy -> setFont(DefaultFont);
     Accuracy->setPos(SCREEN_WIDTH*0.75, SCREEN_HEIGHT*0.54);
@@ -103,7 +108,12 @@ EndingScene::EndingScene(QObject *parent,int v):QGraphicsScene(parent),Score(v){
     GenOpacityAnimationIn(AccText,1);
 
     // show ranking
-    int rank = 0;
+    int rank = 4;
+    qDebug() << w;
+    if(w >= 9500)rank = 0;
+    else if(w >= 9000)rank = 1;
+    else if(w >= 8000)rank = 2;
+    else if(w >= 7000)rank = 3;
     char cRank = (rank == 0) ? 'S' : ('A' + rank - 1);
     QPixmap rankPic(":/img/resources/ranking-"+QString(cRank)+".png");
     QGraphicsPixmapItem *rankItem = new QGraphicsPixmapItem(rankPic);

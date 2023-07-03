@@ -101,13 +101,16 @@ QString Int2String(int num, int x){ // num位数，x数字，取x后num位转换
 
 void GameScene::Change_Number(){
     //Score_.display(score);
+    nNotes ++;
     Score_ -> setText(Int2String(7, score));
     Combo_ -> setText(Int2String(3, combo));
     Time -> setText(Int2String(7,e_timer.elapsed()));
+    mxCombo = qMax(mxCombo,combo);
 }
 
 void GameScene::Correct_Perfect(int pos){
     combo ++;
+    acc += 1;
     score += ((combo < 10) ? combo : 10) * 1000;
     Change_Number();
     qDebug() << "Perfect!\n";
@@ -138,6 +141,7 @@ void GameScene::Correct_Perfect(int pos){
 
 void GameScene::Correct_Good(int pos){
     combo ++;
+    acc += 0.9;
     score += ((combo < 10) ? combo : 10) * 800;
     Change_Number();
     qDebug() << "Good!\n";
@@ -167,6 +171,7 @@ void GameScene::Correct_Good(int pos){
 
 void GameScene::Correct_Normal(int pos){
     combo ++;
+    acc += 0.8;
     score += ((combo < 10) ? combo : 10) * 500;
     Change_Number();
     qDebug() << "Normal!\n";
@@ -502,7 +507,7 @@ void GameScene :: Read_Chart_Data(const QString & Path){
     int Track_num = ReadInt(&file);
     nTracks = Track_num;
     Total_time = ReadInt(&file);
-    FullTime = Total_time;
+    FullTime = Total_time; nNotes = 0;
     memset(pressed_and_long,0,sizeof(pressed_and_long));
 
     //Total_time = 11000; // Just for debugging
@@ -513,6 +518,7 @@ void GameScene :: Read_Chart_Data(const QString & Path){
 
     for(int i = 0; i < Track_num; i ++){
         int m = ReadInt(&file);
+            //nNotes += m;
         for(int j = 1; j <= m; j ++){
             int x = ReadInt(&file), l, r;
             if(x == 1){
@@ -722,7 +728,7 @@ void GameScene::endGame(){
 
 void GameScene::endGameReal(){
     timer500 -> stop();
-    EndingScene* eScene = new EndingScene(this,score);
+    EndingScene* eScene = new EndingScene(this,score,acc/(double)nNotes,mxCombo);
     QGraphicsView* eview = new QGraphicsView(eScene, _parent); // 这里必须要加第二个参数_parent，否则会弹出一个新界面
     eview->setRenderHint(QPainter::Antialiasing);
     eview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
