@@ -5,6 +5,7 @@ DetectLine::DetectLine() {
     QPixmap normal(QPixmap(":/element/resources/detect_line.png"));
     setPixmap(normal);
     setScale(TRACK_WIDTH / boundingRect().width());
+    setZValue(100);
 }
 
 void DetectLine::onKeyPress() {

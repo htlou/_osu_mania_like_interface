@@ -350,9 +350,10 @@ void GameScene::startGame(QString Route) {
 void GameScene::setBackgroundItem() {
     // show background picture
     QPixmap bgPic(QPixmap(":/img/resources/background-1.png"));
-    bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    bgPic = bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
-    background->setPos(0, 0);
+    //const QRectF rect0 = QRectF(TRACK_HEIGHT,0,SCREEN_WIDTH,SCREEN_HEIGHT-TRACK_HEIGHT);
+
     //background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
     addItem(background);
 
@@ -364,6 +365,7 @@ void GameScene::setBackgroundItem() {
     // show board and fixed boundary lines
     trackBoard = new Board;
     addItem(trackBoard);
+    qreal h0 = 26;
     for (int i = 0; i < 4; ++i) {
         DetectLine* dl = new DetectLine;
         dl->setPos(TRACK_WIDTH*(i-2)+SCREEN_WIDTH/2, TRACK_HEIGHT);
@@ -375,6 +377,15 @@ void GameScene::setBackgroundItem() {
     scoreBoard->setBrush(Qt::black);
     scoreBoard->setOpacity(0.5);
     addItem(scoreBoard);
+
+    QPixmap veil;
+    h0 = 26.0 * TRACK_WIDTH / detectLines[0] -> boundingRect().width();
+    veil = bgPic.copy(0,TRACK_HEIGHT+h0,SCREEN_WIDTH,SCREEN_HEIGHT-TRACK_HEIGHT);
+    QGraphicsPixmapItem* Veil = new QGraphicsPixmapItem(veil);
+    background->setPos(0, 0);
+    Veil -> setPos(0,TRACK_HEIGHT+h0);
+    Veil -> setZValue(26);
+    addItem(Veil);
 
     QFont font(DefaultFont); // 初始化得分与Combo
     Score_ -> setPos(SCREEN_WIDTH-300,25);
@@ -398,6 +409,7 @@ void GameScene::setBackgroundItem() {
     MenuButton* pauseBtn = new MenuButton("pause-button");
     pauseBtn->setPos(20, 20);
     pauseBtn->setScale(0.25);
+    pauseBtn -> setZValue(30);
     addItem(pauseBtn);
     connect(pauseBtn, &MenuButton::clicked, this, &GameScene::pauseSlot);
 
@@ -594,13 +606,16 @@ void GameScene::pauseGame()
     pauseBGRect = new QGraphicsRectItem(BGRect);
     pauseBGRect->setBrush(Qt::black);
     pauseBGRect->setOpacity(0.3);
+    pauseBGRect -> setZValue(150);
     addItem(pauseBGRect);
     // button
     btnContinue = new PauseButton("pause-continue");
     btnContinue->setPos(SCREEN_WIDTH *0.35, SCREEN_HEIGHT * 0.55);
+    btnContinue -> setZValue(151);
     addItem(btnContinue);
     btnBack = new PauseButton("pause-back");
     btnBack->setPos(SCREEN_WIDTH *0.65, SCREEN_HEIGHT * 0.55);
+    btnBack -> setZValue(151);
     addItem(btnBack);
     connect(btnContinue, &PauseButton::button_clicked, this, &GameScene::GoOnGame);
     connect(btnBack, &PauseButton::button_clicked, this, &GameScene::handleCloseGameAndPauseWindow);
@@ -610,6 +625,7 @@ void GameScene::pauseGame()
     pauseBGText->setOffset(-pauseText.width()/2, -pauseText.height()/2);
     pauseBGText->setScale(SCREEN_WIDTH*0.3 / pauseText.width());
     pauseBGText->setPos(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.4);
+    pauseBGText->setZValue(151);
     addItem(pauseBGText);
 }
 
