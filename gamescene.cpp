@@ -18,13 +18,13 @@
 #include "menubutton.h"
 
 template<class T>
-void GenOpacityAnimationIn(T* w){
+void GenOpacityAnimationIn(T* w,qreal x){
     QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect;
     w->setGraphicsEffect(opacityEffect);
     QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
     opacityAnimation->setDuration(800);
     opacityAnimation->setKeyValueAt(0.0,0.0);
-    opacityAnimation->setKeyValueAt(1.0,1.0);
+    opacityAnimation->setKeyValueAt(1.0,x);
     opacityAnimation->start();
 }
 
@@ -43,7 +43,7 @@ GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
     // set the size of the scene & the background
-    Path = ":/datamusic/data";
+    Path = ":/datamusic/data/"+Route;
     DefaultPath = ":/resources";
     Route_ = Route;
 
@@ -318,15 +318,31 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
     }
 }
 
+void GameScene::EnableAnimation(){
+    GenOpacityAnimationIn(trackBoard,0.8);
+    for(int i = 0; i < 4; i ++)
+        GenOpacityAnimationIn(detectLines[i],1);
+
+    timer500 = new QTimer;
+    timer500 -> start(800);
+    connect(timer500,&QTimer::timeout,this,&GameScene::startGameReal);
+}
+
 void GameScene::startGame(QString Route) {
     eps = eps0;
     eps_good = eps1;
     eps_perfect = eps2;
 //这里是我们用GlobalVariations替换的位置
-    Read_Chart_Data((Path+"/"+Route+"/chart.txt"));
+    Read_Chart_Data((Path+"/chart.txt"));
     setBackgroundItem(); // 曲绘目前放在这里
-    Read_BGM_Data((Path + "/"+Route+"/audio.mp3"));
+    Read_BGM_Data((Path+"/audio.mp3"));
+
+    EnableAnimation();
 //    Read_Img_Data((Path + "/"+Route+"/BG.jpg"));也可以用这个放置曲绘，没想好
+}
+
+void GameScene::startGameReal(){
+    timer500 -> stop();
     setFallingItems();
     // set timer events
 
@@ -334,11 +350,10 @@ void GameScene::startGame(QString Route) {
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
     chkMiss = new QTimer(this);
-    chkMiss -> start(1); //每个10ms检查是否有错过的按键
+    chkMiss -> start(5); //每个10ms检查是否有错过的按键
 
     AllTimer = new QTimer(this);
     AllTimer -> start(Total_time);
-    qDebug() << "FUUFUFUFUFUFU" << Total_time;
 
     e_timer.start();
     start_time = clock();
@@ -351,7 +366,7 @@ void GameScene::setBackgroundItem() {
     // show background picture
     QPixmap bgPic(QPixmap(":/img/resources/background-1.png"));
     bgPic = bgPic.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
-    QGraphicsPixmapItem *background = new QGraphicsPixmapItem(bgPic);
+    background = new QGraphicsPixmapItem(bgPic);
     //const QRectF rect0 = QRectF(TRACK_HEIGHT,0,SCREEN_WIDTH,SCREEN_HEIGHT-TRACK_HEIGHT);
 
     //background->setPos(-(bgPic.width()-SCREEN_WIDTH)/2, -(bgPic.height()-SCREEN_HEIGHT)/2);
@@ -373,7 +388,7 @@ void GameScene::setBackgroundItem() {
         addItem(dl);
     }
     // draw score board
-    QGraphicsRectItem *scoreBoard = new QGraphicsRectItem((SCREEN_WIDTH+TRACK_WIDTH*4)/2,0,(SCREEN_WIDTH-TRACK_WIDTH*4)/2,200);
+    scoreBoard = new QGraphicsRectItem((SCREEN_WIDTH+TRACK_WIDTH*4)/2,0,(SCREEN_WIDTH-TRACK_WIDTH*4)/2,200);
     scoreBoard->setBrush(Qt::black);
     scoreBoard->setOpacity(0.5);
     addItem(scoreBoard);
@@ -381,7 +396,7 @@ void GameScene::setBackgroundItem() {
     QPixmap veil;
     h0 = 26.0 * TRACK_WIDTH / detectLines[0] -> boundingRect().width();
     veil = bgPic.copy(0,TRACK_HEIGHT+h0,SCREEN_WIDTH,SCREEN_HEIGHT-TRACK_HEIGHT);
-    QGraphicsPixmapItem* Veil = new QGraphicsPixmapItem(veil);
+    Veil = new QGraphicsPixmapItem(veil);
     background->setPos(0, 0);
     Veil -> setPos(0,TRACK_HEIGHT+h0);
     Veil -> setZValue(26);
@@ -406,7 +421,7 @@ void GameScene::setBackgroundItem() {
     this -> addItem(Combo_);
     this -> addItem(Time);
     // draw pause button
-    MenuButton* pauseBtn = new MenuButton("pause-button");
+    pauseBtn = new MenuButton("pause-button");
     pauseBtn->setPos(20, 20);
     pauseBtn->setScale(0.25);
     pauseBtn -> setZValue(30);
@@ -552,7 +567,6 @@ GameScene::~GameScene(){
 }
 
 void GameScene::handleCloseGameAndPauseWindow(){
-
     this->clear();
     this->deleteLater();
     emit closethis();
@@ -676,6 +690,22 @@ void GameScene::endGame(){
         timeline -> start();
         GenOpacityAnimationOut(detectLines[i]);
     }
+
+    removeItem(Veil);
+    removeItem(scoreBoard);
+    removeItem(Score_);
+    removeItem(Time);
+    removeItem(Combo_);
+    removeItem(pauseBtn);
+
+    QGraphicsBlurEffect* BlurEffect = new QGraphicsBlurEffect;
+    background->setGraphicsEffect(BlurEffect);
+    QPropertyAnimation *BlurAnimation = new QPropertyAnimation(BlurEffect, "blurRadius");
+    BlurAnimation->setDuration(800);
+    BlurAnimation->setKeyValueAt(0.0,0.0);
+    BlurAnimation->setKeyValueAt(1.0,110.0);
+    BlurAnimation->start();
+
 
     timer500 = new QTimer;
     timer500 -> start(800);

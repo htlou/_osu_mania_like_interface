@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         }
     }
     DefaultFont.setPointSize(30);
-    SmallFont.setPointSize(10);
+    SmallFont.setPointSize(15);
 
     SCREEN_WIDTH = screen.width();
     SCREEN_HEIGHT = screen.height();

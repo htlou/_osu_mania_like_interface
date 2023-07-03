@@ -22,6 +22,7 @@
 #include <QLabel>
 #include <QProcess>
 #include <QSignalMapper>
+#include <menubutton.h>
 
 class GameScene : public QGraphicsScene
 {
@@ -78,6 +79,8 @@ private:
     void endgame0();
     void checkMiss();
     void endGameReal();
+    void startGameReal();
+    void EnableAnimation();
 
     Board* trackBoard;
     int s_width;
@@ -130,9 +133,13 @@ private:
     QAudioOutput *audioOutput = new QAudioOutput;
 
     // pause interface items
+    MenuButton* pauseBtn;
     PauseButton *btnContinue, *btnBack;
     QGraphicsRectItem *pauseBGRect;
+    QGraphicsRectItem *scoreBoard;
     QGraphicsPixmapItem *pauseBGText;
+    QGraphicsPixmapItem *background;
+    QGraphicsPixmapItem *Veil;
 
     QString Route_;
 
