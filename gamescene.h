@@ -77,7 +77,9 @@ private:
     void endGame();
     void endgame0();
     void checkMiss();
+    void endGameReal();
 
+    Board* trackBoard;
     int s_width;
     int s_height;
     int x_offset;
@@ -100,6 +102,7 @@ private:
     QElapsedTimer e_timer;
     QTimer *chkMiss;
     QTimer *hintVanishTimer;
+    QTimer* timer500;
 
     // item containers
     QVector<QGraphicsRectItem*> keyItems;   // deprecate in future versions

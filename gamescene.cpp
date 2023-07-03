@@ -17,6 +17,28 @@
 #include "ending.h"
 #include "menubutton.h"
 
+template<class T>
+void GenOpacityAnimationIn(T* w){
+    QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect;
+    w->setGraphicsEffect(opacityEffect);
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(800);
+    opacityAnimation->setKeyValueAt(0.0,0.0);
+    opacityAnimation->setKeyValueAt(1.0,1.0);
+    opacityAnimation->start();
+}
+
+template<class T>
+void GenOpacityAnimationOut(T* w){
+    QGraphicsOpacityEffect* opacityEffect = new QGraphicsOpacityEffect;
+    w->setGraphicsEffect(opacityEffect);
+    QPropertyAnimation *opacityAnimation = new QPropertyAnimation(opacityEffect, "opacity");
+    opacityAnimation->setDuration(800);
+    opacityAnimation->setKeyValueAt(0.0,0.8);
+    opacityAnimation->setKeyValueAt(1.0,0.0);
+    opacityAnimation->start();
+}
+
 GameScene::GameScene(QString Route, QObject *parent)
     : QGraphicsScene(parent), _parent((MyMainWindow*)parent), status(0), trackWidth(100), trackInterval(20), velocity(VELOCITY), track_x(150)
 {
@@ -205,6 +227,8 @@ void GameScene::hintVanishSlot(int pos)
 }
 
 void GameScene::keyPressEvent(QKeyEvent* event) {
+
+    if(e_timer.elapsed() - pauseTime > Total_time + 100)return;
     if (event->isAutoRepeat()) {
         return;
     }
@@ -257,6 +281,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
 }
 
 void GameScene::keyReleaseEvent(QKeyEvent* event) {
+    if(e_timer.elapsed() - pauseTime > Total_time + 100)return;
     if (event->isAutoRepeat()) {
         return;
     }
@@ -337,7 +362,7 @@ void GameScene::setBackgroundItem() {
     qDebug() << "This is track height: " << TRACK_HEIGHT;
 
     // show board and fixed boundary lines
-    Board *trackBoard = new Board;
+    trackBoard = new Board;
     addItem(trackBoard);
     for (int i = 0; i < 4; ++i) {
         DetectLine* dl = new DetectLine;
@@ -617,7 +642,32 @@ void GameScene::endGame(){
         //addItem(Difficulty);
     }
 
+    QGraphicsItemAnimation* animation = new QGraphicsItemAnimation;
+    animation -> setItem(trackBoard);
+    QTimeLine* timeline = new QTimeLine(800);
+    animation -> setTimeLine(timeline);
+    animation-> setPosAt(0,QPointF(SCREEN_WIDTH / 2 - TRACK_WIDTH * 2, 0));
+    animation-> setPosAt(1,QPointF(SCREEN_WIDTH / 2 - TRACK_WIDTH * 2, -TRACK_HEIGHT));
+    timeline -> start();
+    GenOpacityAnimationOut(trackBoard);
+    for(int i = 0; i < 4; i ++){
+        QGraphicsItemAnimation* animation = new QGraphicsItemAnimation;
+        animation -> setItem(detectLines[i]);
+        QTimeLine* timeline = new QTimeLine(800);
+        animation -> setTimeLine(timeline);
+        animation-> setPosAt(0,QPointF(TRACK_WIDTH*(i-2)+SCREEN_WIDTH/2, TRACK_HEIGHT));
+        animation-> setPosAt(1,QPointF(TRACK_WIDTH*(i-2)+SCREEN_WIDTH/2, 0));
+        timeline -> start();
+        GenOpacityAnimationOut(detectLines[i]);
+    }
 
+    timer500 = new QTimer;
+    timer500 -> start(800);
+    connect(timer500,&QTimer::timeout,this,&GameScene::endGameReal);
+}
+
+void GameScene::endGameReal(){
+    timer500 -> stop();
     EndingScene* eScene = new EndingScene(this,score);
     QGraphicsView* eview = new QGraphicsView(eScene, _parent); // 这里必须要加第二个参数_parent，否则会弹出一个新界面
     eview->setRenderHint(QPainter::Antialiasing);
