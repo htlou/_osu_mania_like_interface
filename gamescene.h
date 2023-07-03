@@ -81,6 +81,7 @@ private:
     void endGameReal();
     void startGameReal();
     void EnableAnimation();
+    void setBackgroundItem_part2();
 
     Board* trackBoard;
     int s_width;

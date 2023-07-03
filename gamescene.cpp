@@ -335,17 +335,17 @@ void GameScene::startGame(QString Route) {
 //这里是我们用GlobalVariations替换的位置
     Read_Chart_Data((Path+"/chart.txt"));
     setBackgroundItem(); // 曲绘目前放在这里
-    Read_BGM_Data((Path+"/audio.mp3"));
 
     EnableAnimation();
 //    Read_Img_Data((Path + "/"+Route+"/BG.jpg"));也可以用这个放置曲绘，没想好
 }
 
 void GameScene::startGameReal(){
+    setBackgroundItem_part2();
     timer500 -> stop();
+    Read_BGM_Data((Path+"/audio.mp3"));
     setFallingItems();
     // set timer events
-
     keyFallingTimer = new QTimer(this);
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
@@ -387,11 +387,6 @@ void GameScene::setBackgroundItem() {
         detectLines.append(dl);
         addItem(dl);
     }
-    // draw score board
-    scoreBoard = new QGraphicsRectItem((SCREEN_WIDTH+TRACK_WIDTH*4)/2,0,(SCREEN_WIDTH-TRACK_WIDTH*4)/2,200);
-    scoreBoard->setBrush(Qt::black);
-    scoreBoard->setOpacity(0.5);
-    addItem(scoreBoard);
 
     QPixmap veil;
     h0 = 26.0 * TRACK_WIDTH / detectLines[0] -> boundingRect().width();
@@ -401,6 +396,14 @@ void GameScene::setBackgroundItem() {
     Veil -> setPos(0,TRACK_HEIGHT+h0);
     Veil -> setZValue(26);
     addItem(Veil);
+    // draw score board
+}
+
+void GameScene::setBackgroundItem_part2(){
+    scoreBoard = new QGraphicsRectItem((SCREEN_WIDTH+TRACK_WIDTH*4)/2,0,(SCREEN_WIDTH-TRACK_WIDTH*4)/2,200);
+    scoreBoard->setBrush(Qt::black);
+    scoreBoard->setOpacity(0.5);
+    addItem(scoreBoard);
 
     QFont font(DefaultFont); // 初始化得分与Combo
     Score_ -> setPos(SCREEN_WIDTH-300,25);
@@ -409,10 +412,10 @@ void GameScene::setBackgroundItem() {
     Combo_ -> setPos(SCREEN_WIDTH-300,75);
     Combo_ -> setBrush(Qt::white);
     Combo_ -> setFont(font);
-//    stageHint* combo_icon = new stageHint("combo");
-//    combo_icon->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.10);
-//    combo_icon->setScale(0.3);
-//    addItem(combo_icon);
+    //    stageHint* combo_icon = new stageHint("combo");
+    //    combo_icon->setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.10);
+    //    combo_icon->setScale(0.3);
+    //    addItem(combo_icon);
     Time -> setPos(SCREEN_WIDTH-300,125);
     Time -> setBrush(Qt::white);
     Time -> setFont(font);
@@ -427,7 +430,6 @@ void GameScene::setBackgroundItem() {
     pauseBtn -> setZValue(30);
     addItem(pauseBtn);
     connect(pauseBtn, &MenuButton::clicked, this, &GameScene::pauseSlot);
-
 }
 
 // set falling items

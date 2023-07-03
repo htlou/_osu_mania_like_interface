@@ -189,7 +189,7 @@ void settings_scene::AddVolumeBar(VolumeBar *v){
 
 settings_scene::settings_scene(QObject *parent): QGraphicsScene(parent){
     QPixmap _background(QPixmap(":/img/resources/fail-background.png"));
-    _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
+    _background = _background.scaled(SCREEN_WIDTH, SCREEN_HEIGHT, Qt::KeepAspectRatioByExpanding);
     background = new QGraphicsPixmapItem(_background);
     background->setPos(0,0);
     this->addItem(background);
