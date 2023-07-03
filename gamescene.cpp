@@ -119,6 +119,7 @@ void GameScene::Correct_Perfect(int pos){
         delete hintVanishTimer;
     }
     hint[pos] = new stageHint("hint-perfect");
+    hint[pos] -> setZValue(27);
     hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
     addItem(hint[pos]);
     hintVanishTimer = new QTimer();
@@ -148,6 +149,7 @@ void GameScene::Correct_Good(int pos){
     }
     hint[pos] = new stageHint("hint-good");
     hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
+    hint[pos] -> setZValue(27);
     addItem(hint[pos]);
     hintVanishTimer = new QTimer();
     hintVanishTimer->start(500);
@@ -175,6 +177,7 @@ void GameScene::Correct_Normal(int pos){
         delete hintVanishTimer;
     }
     hint[pos] = new stageHint("hint-normal");
+    hint[pos] -> setZValue(27);
     hint[pos]->setPos(TRACK_WIDTH*(pos-2+0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
     addItem(hint[pos]);
     hintVanishTimer = new QTimer();
@@ -203,6 +206,7 @@ void GameScene::Miss(int pos){
         delete hintVanishTimer;
     }
     hint[pos] = new stageHint("hint-miss");
+    hint[pos] -> setZValue(27);
     hint[pos]->setPos(TRACK_WIDTH*(pos-2 + 0.50)+SCREEN_WIDTH/2, TRACK_HEIGHT-120);
     addItem(hint[pos]);
     hintVanishTimer = new QTimer();
@@ -227,7 +231,7 @@ void GameScene::hintVanishSlot(int pos)
 }
 
 void GameScene::keyPressEvent(QKeyEvent* event) {
-
+    if(is_paused)return;
     if(e_timer.elapsed() - pauseTime > Total_time + 100)return;
     if (event->isAutoRepeat()) {
         return;
@@ -236,7 +240,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
     if(event->key()== Qt::Key_Escape && status){
         pauseGame();
     }
-    else {
+    else if(event -> key() != Qt :: Key_Exit && status){
         for (int i = 0; i < nTracks; ++i) {
             if (event->key() == keyVal[i]) {
                 // detect collision
@@ -281,6 +285,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
 }
 
 void GameScene::keyReleaseEvent(QKeyEvent* event) {
+    if(is_paused)return;
     if(e_timer.elapsed() - pauseTime > Total_time + 100)return;
     if (event->isAutoRepeat()) {
         return;
@@ -615,6 +620,7 @@ void GameScene::pauseGame()
             queueFalling[i]->pauseFalling();
         }
     }
+    qDebug() << "yes";
     pauseClock = e_timer.elapsed();
     // pause interface
     // background color (half transparent)
