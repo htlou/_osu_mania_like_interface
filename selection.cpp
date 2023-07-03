@@ -239,7 +239,7 @@ void selection_scene::genAnimationDown(){
 }
 
 void selection_scene::keyPressEvent(QKeyEvent* event){
-    if(timer->elapsed() / (CLOCKS_PER_SEC / 1000) <= 500){
+    if(timer->elapsed() <= 500){
         return;
     }
     if (event->isAutoRepeat()) {

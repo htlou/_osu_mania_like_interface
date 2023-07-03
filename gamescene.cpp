@@ -223,7 +223,7 @@ void GameScene::keyPressEvent(QKeyEvent* event) {
                 detectLines[i]->onKeyPress();
 
                 int now_time = e_timer.elapsed() - pauseTime;
-                now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+                //now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
                 qDebug()<< i <<" " << now_time<<" "<< "pressed";
                 while(ptr[i] < tm[i].size() && now_time - tm[i][ptr[i]].first > eps){
                     ptr[i] ++;
@@ -267,7 +267,7 @@ void GameScene::keyReleaseEvent(QKeyEvent* event) {
             detectLines[i]->onKeyRelease();
 
             int now_time = e_timer.elapsed() - pauseTime;
-            now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
+            //now_time = 1ll * now_time * 1000 / CLOCKS_PER_SEC;
 
             int R = tm[i][ptr[i]].second;
             if(R == -1){

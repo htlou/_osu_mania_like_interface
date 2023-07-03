@@ -57,7 +57,7 @@ public:
     QGraphicsPixmapItem *background;
     QElapsedTimer *timer;
 
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event)override;
     void UpdateInfo();
 
 public slots:

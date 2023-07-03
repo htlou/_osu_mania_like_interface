@@ -12,11 +12,11 @@ class MenuButton : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     MenuButton(const QString &name);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event)override;
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event)override;
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event)override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event)override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)override;
     QRectF boundingRect() const override;
 
 signals:

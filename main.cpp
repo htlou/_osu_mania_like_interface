@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     SCREEN_HEIGHT = screen.height();
     rootdir = QCoreApplication::applicationDirPath();
 
-    bool flag = 0; int pos = 0;
+    bool flag = 0;
     for(int i = rootdir.length() - 1; i; i --){
         if(rootdir[i] == '/' && !flag){
             flag = 1;
