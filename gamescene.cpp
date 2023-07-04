@@ -117,7 +117,6 @@ void GameScene::Correct_Perfect(int pos){
     //qDebug() << hint;
     // show hint
     if (hint[pos]) {
-        qDebug() << "delete!";
         delete hint[pos];
         delete hintVanishTimer;
     }
@@ -147,7 +146,6 @@ void GameScene::Correct_Good(int pos){
     qDebug() << "Good!\n";
     // show hint
     if (hint[pos]) {
-        qDebug() << "delete!";
         delete hint[pos];
         delete hintVanishTimer;
     }
@@ -177,7 +175,6 @@ void GameScene::Correct_Normal(int pos){
     qDebug() << "Normal!\n";
     // show hint
     if (hint[pos]) {
-        qDebug() << "delete!";
         delete hint[pos];
         delete hintVanishTimer;
     }
@@ -206,7 +203,6 @@ void GameScene::Miss(int pos){
     qDebug() << "Miss!\n";
     // show hint
     if (hint[pos]) {
-        qDebug() << "delete!";
         delete hint[pos];
         delete hintVanishTimer;
     }
@@ -360,7 +356,7 @@ void GameScene::startGameReal(){
     keyFallingTimer->start(INTERVAL); // 默认 0.01s 触发判定是否有键下落
 
     chkMiss = new QTimer(this);
-    chkMiss -> start(5); //每个10ms检查是否有错过的按键
+    chkMiss -> start(INTERVAL); //每个10ms检查是否有错过的按键
 
     AllTimer = new QTimer(this);
     AllTimer -> start(Total_time);
@@ -450,33 +446,39 @@ void GameScene::setFallingItems() {
             for (auto p : tm[i]) {
                 FallingKey *key = new FallingKey(i, p.first, p.second, this);
                 addItem(key);
-                fallingKeys.insert(p.first, key);
+                fallingKeys.push_back(qMakePair(p.first, key));
             }
         }
     }
+    std::sort(fallingKeys.begin(),fallingKeys.end());
+    for(int i = 0; i < fallingKeys.size(); i ++)
+        qDebug() << fallingKeys[i].second->trackID << " " << fallingKeys[i].second -> startTime;
     qDebug() << "keys prepared";
-    qDebug() << fallingKeys.size() << " " << fallingKeys.begin().key();
-    if (e_timer.elapsed() > Total_time) {
+    //qDebug() << fallingKeys.size() << " " << fallingKeys.begin().key();
+    if (e_timer.elapsed() - pauseTime > Total_time && !is_paused) {
         endInterface();
     }
 }
 
 // handle falling animation; functions on certain interval
 void GameScene :: timerFallingKey() {
-     int i = 0;
-     int nErase = 0;
+    //int i = 0;
+    int nErase = 0;
 
-    for(auto p = fallingKeys.begin();p != fallingKeys.end() ; ++p) {
-        if ((p.key() - e_timer.elapsed() + pauseTime) * VELOCITY / INTERVAL > TRACK_HEIGHT) break;
+    //for(int i = 0; i < queue)
+
+    for(int p = H_fk; p < fallingKeys.size(); p ++) {
+        if ((fallingKeys[p].first - e_timer.elapsed() + pauseTime) * VELOCITY / INTERVAL > TRACK_HEIGHT) break;
             nErase++;
-        FallingKey* fk = p.value();
-            if (!fk->isFalling) fk->startFalling();
-        queueFalling.push_back(fk);
-        i++;
+        if (!fallingKeys[p].second->isFalling) fallingKeys[p].second->startFalling(),
+                qDebug() << "on " << e_timer.elapsed() - pauseTime << " key " << fallingKeys[p].first << " " << fallingKeys[p].second -> longKey << " start to fall";
+        queueFalling.insert(fallingKeys[p].second ->endTime == -1 ? fallingKeys[p].second -> startTime : fallingKeys[p].second -> endTime ,fallingKeys[p].second);
+        H_fk ++;
+        //i++;
     }
     // qDebug() << e_timer.elapsed()-pause_time << " " << i<<" by timerFallingKey";
-    if (nErase)
-        for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
+    //if (nErase)
+      //  for (int i = 0; i < nErase; ++i) fallingKeys.erase(fallingKeys.begin());
 }
 
 // delete the key at the end of the falling event
@@ -484,7 +486,12 @@ void GameScene::handleEndOfFalling()
 {
     qDebug() << "handle end of falling";
     qDebug() << e_timer.elapsed() - pauseTime << " " << e_timer.elapsed() << " " << pauseTime;
-    queueFalling.pop_front();
+
+    for (QMultiMap<int,FallingKey*>::iterator i = queueFalling.begin(); i != queueFalling.end(); ++i) {
+        qDebug() << (*i) -> startTime;
+    }
+
+    queueFalling.erase(queueFalling.begin());
 }
 
 // read file
@@ -533,13 +540,13 @@ void GameScene :: Read_Chart_Data(const QString & Path){
         tm[i].push_back(qMakePair(Total_time + 114514, -1));
         ptr[i] = 0;
     }
-    for(int i = 0; i < Track_num; i ++)
-        qDebug() << tm[i].size() << " "; qDebug() << "\n";
+//    for(int i = 0; i < Track_num; i ++)
+//        qDebug() << tm[i].size() << " "; qDebug() << "\n";
 
-    for(int i = 0; i < Track_num; i ++){
-        for(int j = 0; j < tm[i].size(); j ++)
-            qDebug() << tm[i][j].first << " " << tm[i][j].second << "\n";
-    }
+//    for(int i = 0; i < Track_num; i ++){
+//        for(int j = 0; j < tm[i].size(); j ++)
+//            qDebug() << tm[i][j].first << " " << tm[i][j].second << "\n";
+//    }
     //qDebug() << "Read End!";
     file.close();
     }
@@ -603,9 +610,9 @@ void GameScene::GoOnGame(){
     AllTimer->start(Total_time - FullTime);
     is_paused = 0;
     // deal with key falling
-    for (int i = 0; i < queueFalling.size(); ++i) {
-        if (queueFalling[i]->isFalling) {
-            queueFalling[i]->resumeFalling();
+    for (QMultiMap<int,FallingKey*>::iterator i = queueFalling.begin(); i != queueFalling.end(); ++i) {
+        if ((*i)->isFalling) {
+            (*i)->resumeFalling();
         }
     }
     connect(keyFallingTimer, &QTimer::timeout, this, &GameScene::timerFallingKey);
@@ -620,10 +627,12 @@ void GameScene::pauseGame()
     keyFallingTimer->stop();
     AllTimer -> stop();
     player->pause();
+    qDebug() << "test1";
     // pause the falling keys
-    for (int i = 0; i < queueFalling.size(); ++i) {
-        if (queueFalling[i]->isFalling) {
-            queueFalling[i]->pauseFalling();
+    qDebug() << queueFalling.size();
+    for (QMultiMap<int,FallingKey*>::iterator i = queueFalling.begin(); i != queueFalling.end(); ++i) {
+        if ((*i)->isFalling) {
+            (*i)->pauseFalling();
         }
     }
     qDebug() << "yes";

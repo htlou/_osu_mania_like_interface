@@ -51,9 +51,11 @@ FallingKey::FallingKey(int _trackid, int _starttime, int _endtime, QGraphicsScen
 //}
 
 void FallingKey::startFalling() {
-    qDebug() << "start falling";
-    setOpacity(1);
+    if(isFalling)return;
     isFalling = true;
+    qDebug() << "start falling" << " " << INTERVAL;
+    setOpacity(1);
+
     // set up timer
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &FallingKey::fall);
@@ -75,7 +77,7 @@ void FallingKey::resumeFalling()
 
 void FallingKey::fall()
 {
-    // qDebug() << "key on" << trackID << "fall";
+    qDebug() << "key on" << trackID << " " << startTime << "fall" << " nowPos" << pos().y() << " " << m_timer->interval();
     setY(pos().y() + VELOCITY);
     if (pos().y() >= TRACK_HEIGHT && longKey == -1) {
         m_timer->stop();

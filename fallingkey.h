@@ -22,7 +22,7 @@ signals:
     void endOfFalling();
 public slots:
     virtual void fall();
-private:
+public:
     int startTime, endTime;
     int duration;
     int trackID;

@@ -110,11 +110,12 @@ private:
 
     // item containers
     QVector<QGraphicsRectItem*> keyItems;   // deprecate in future versions
-    int keyVal[6] {Qt::Key_S, Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J, Qt::Key_K};
+    int keyVal[4] {Qt::Key_D, Qt::Key_F, Qt::Key_H, Qt::Key_J};
     QVector<QPair<int, int> > tm[11];
-    QMultiMap<int, FallingKey*> fallingKeys;
+    QVector<QPair<int,FallingKey*>> fallingKeys;
+    int H_fk = 0;
     QVector<DetectLine*> detectLines;
-    QQueue<FallingKey*> queueFalling;
+    QMultiMap<int,FallingKey*> queueFalling;
 
     QGraphicsSimpleTextItem* Score_ = new QGraphicsSimpleTextItem("0000000");
     QGraphicsSimpleTextItem* Combo_ = new QGraphicsSimpleTextItem("000");
