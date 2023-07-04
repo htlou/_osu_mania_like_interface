@@ -24,9 +24,39 @@
         <file>data/1/BG.jpg</file>
         <file>data/1/chart.txt</file>
         <file>data/1/audio.mp3</file>
-        <file>data/1/bga.mp4</file>
         <file>data/filepath4/info.txt</file>
         <file>data/1/info.txt</file>
+        <file>data/filepath5/info.txt</file>
+        <file>data/filepath6/info.txt</file>
+        <file>data/filepath7/info.txt</file>
+        <file>data/filepath8/info.txt</file>
+        <file>data/filepath9/info.txt</file>
+        <file>data/filepath4/audio.mp3</file>
+        <file>data/filepath4/BG.jpg</file>
+        <file>data/filepath4/chart.txt</file>
+        <file>data/filepath5/49785_vocaloid_hatsune_miku.jpg</file>
+        <file>data/filepath5/audio.mp3</file>
+        <file>data/filepath5/chart.txt</file>
+        <file>data/filepath6/347779l.jpg</file>
+        <file>data/filepath6/audio.mp3</file>
+        <file>data/filepath6/chart.txt</file>
+        <file>data/filepath7/audio.mp3</file>
+        <file>data/filepath7/BG.jpg</file>
+        <file>data/filepath7/chart.txt</file>
+        <file>data/filepath8/audio.mp3</file>
+        <file>data/filepath8/Background.jpg</file>
+        <file>data/filepath8/chart.txt</file>
+        <file>data/filepath9/audio.mp3</file>
+        <file>data/filepath9/chart.txt</file>
+        <file>data/filepath9/common.png</file>
+        <file>data/filepath2/495521.jpg</file>
+        <file>data/filepath2/audio.mp3</file>
+        <file>data/filepath2/chart.txt</file>
+        <file>data/filepath2/info.txt</file>
+        <file>data/filepath3/audio.mp3</file>
+        <file>data/filepath3/BG.jpg</file>
+        <file>data/filepath3/chart.txt</file>
+        <file>data/filepath3/info.txt</file>
     </qresource>
     <qresource prefix="/element">
         <file>resources/detect_line.png</file>
